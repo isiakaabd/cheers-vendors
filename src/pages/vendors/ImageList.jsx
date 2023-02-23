@@ -1,6 +1,4 @@
-import ImageList from "@mui/material/ImageList";
-import ImageListItem from "@mui/material/ImageListItem";
-import { Grid } from "@mui/material";
+import { Grid, ImageList, ImageListItem } from "@mui/material";
 
 export default function Images({ itemData }) {
   return (
