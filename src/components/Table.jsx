@@ -12,8 +12,7 @@ import {
 } from "@mui/material";
 import PropTypes from "prop-types";
 import { useTheme } from "@mui/material/styles";
-
-import IconButton from "@mui/material/IconButton";
+import { IconButton } from "@mui/material";
 import FirstPageIcon from "@mui/icons-material/FirstPage";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";

@@ -40,7 +40,7 @@ export const inventorySlice = api.injectEndpoints({
     updateInventory: builder.mutation({
       query: ({ body, id }) => ({
         url: `inventories/${id}`,
-        method: "PUT",
+        method: "POST",
         body,
       }),
       invalidatesTags: ["inventory"],

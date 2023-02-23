@@ -171,7 +171,7 @@ function Rows({ row }) {
   );
 }
 
-function Skeletons() {
+export function Skeletons() {
   return (
     <Grid item container gap={4}>
       <Skeleton

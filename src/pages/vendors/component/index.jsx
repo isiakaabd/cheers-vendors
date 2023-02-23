@@ -7,7 +7,6 @@ import {
   useUpdateInventoryMutation,
 } from "redux/api/inventory";
 import { useGetAllCategoriesQuery } from "redux/api/vendor";
-
 import FormikControl from "validation/FormikControl";
 import * as Yup from "yup";
 
@@ -75,13 +74,14 @@ const CreateInventory = ({ heading, values, setOpen, type }) => {
 
   const handleSubmit = async (values) => {
     const { title, category, price, description, file } = values;
-    console.log(values);
+
     const formData = new FormData();
+    formData.append("_method", "put");
     formData.append("title", title);
     formData.append("category_id", category);
     formData.append("price", price);
     formData.append("description", description);
-    if (file.length > 0) {
+    if (file?.length > 0) {
       for (let i = 0; i < file.length; i++) {
         formData.append("gallery[]", file[i]);
       }
@@ -107,8 +107,6 @@ const CreateInventory = ({ heading, values, setOpen, type }) => {
       if (category?.length > 0) toast.error(category[0]);
       if (price?.length > 0) toast.error(price[0]);
     }
-
-    toast.error(error);
   };
   // if (isLoading) return <Skeleton />;
   return (

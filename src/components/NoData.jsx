@@ -1,4 +1,3 @@
-import React from "react";
 import { Grid, Typography } from "@mui/material";
 import PropTypes from "prop-types";
 const NoData = ({ error }) => {

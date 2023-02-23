@@ -1,17 +1,9 @@
-import Menu from "@mui/material/Menu";
+import { Menu } from "@mui/material";
 
-export default function BasicMenu({
-  open,
-  anchorEl,
-  setAnchorEl,
-  children,
-  handleClick,
-  handleClose,
-}) {
+export default function BasicMenu({ open, anchorEl, children, handleClose }) {
   return (
     <Menu
       elevation={12}
-      //   sx={{ }}
       id="basic-menu"
       anchorEl={anchorEl}
       sx={{

@@ -4,10 +4,9 @@ import {
   ListItemIcon,
   ListItemText,
   MenuItem,
-  Skeleton,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import {
   useDeleteInventoryMutation,
@@ -23,6 +22,7 @@ import {
 import { toast } from "react-toastify";
 import Dialogs from "components/Dialog";
 import CreateInventory from "./component";
+import { Skeletons } from ".";
 
 const Inventory = () => {
   const { id } = useParams();
@@ -47,7 +47,7 @@ const Inventory = () => {
   };
   const { data, isLoading } = useGetInventoryQuery(id);
   const [edit, setEdit] = useState(false);
-  if (isLoading) return <Skeleton />;
+  if (isLoading) return <Skeletons />;
   const { media, title, category, description, reviews, price } = data;
 
   const initials = {
@@ -139,7 +139,7 @@ const Inventory = () => {
       >
         <CreateInventory
           // open={open}
-          // setOpen={setOpen}
+          setOpen={setEdit}
           values={initials}
           type="edit"
           heading={"Edit Inventory"}

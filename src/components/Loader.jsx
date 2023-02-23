@@ -1,4 +1,3 @@
-import React from "react";
 import { Grid, CircularProgress } from "@mui/material";
 import PropTypes from "prop-types";
 const Loader = ({ color, size, ...rest }) => {
