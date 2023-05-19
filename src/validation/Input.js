@@ -1,7 +1,5 @@
-import React from "react";
 import { Field, ErrorMessage } from "formik/dist";
 import PropTypes from "prop-types";
-// import { makeStyles } from "@mui/styles";
 import { Grid, TextField, Typography } from "@mui/material";
 import { TextError } from "./TextError";
 const Text = ({ placeholder, ...rest }) => {

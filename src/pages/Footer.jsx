@@ -1,5 +1,4 @@
 import { Typography, Grid } from "@mui/material";
-import { Link } from "react-router-dom";
 import MuiAppBar from "@mui/material/AppBar";
 import { styled } from "@mui/material/styles";
 const drawerWidth = 260;
@@ -37,7 +36,7 @@ const Footer = ({ open }) => {
       sx={{ top: "auto", bottom: 0 }}
     >
       <Grid item container flexWrap="nowrap" alignItems="flex-end">
-        <Grid item flex={1}>
+        <Grid item container justifyContent="center">
           <Typography
             sx={{
               color: "#7e8299",
@@ -46,12 +45,16 @@ const Footer = ({ open }) => {
           >
             {" "}
             2023&nbsp; &copy; &nbsp;
-            <Typography variant="span" color="text.primary">
+            <Typography
+              variant="span"
+              color="text.primary"
+              sx={{ color: "#7e8299" }}
+            >
               Cheers
             </Typography>
           </Typography>
         </Grid>
-        <Grid item>
+        {/* <Grid item>
           <Grid
             item
             container
@@ -94,7 +97,7 @@ const Footer = ({ open }) => {
             >
               Purchase
             </Typography>
-            {/* <List sx={{ display: "flex", alignItems: "center" }}>
+            <List sx={{ display: "flex", alignItems: "center" }}>
             <ListItem disableGutters>
               <ListItemButton>
                 <ListItemText primary="About" />
@@ -110,9 +113,9 @@ const Footer = ({ open }) => {
                 <ListItemText primary="Purchase" />
               </ListItemButton>
             </ListItem>
-          </List> */}
+          </List> 
           </Grid>
-        </Grid>
+        </Grid> */}
       </Grid>
     </AppBar>
   );

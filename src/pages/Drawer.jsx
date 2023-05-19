@@ -24,12 +24,12 @@ import MuiDrawer from "@mui/material/Drawer";
 import {
   ArrowBackIosNewOutlined,
   DashboardCustomizeOutlined,
-  CommuteOutlined,
   KeyboardArrowDownOutlined,
   PersonAddAlt1Outlined,
   SettingsOutlined,
   ChevronLeftOutlined,
   LogoutOutlined,
+  SupportOutlined,
 } from "@mui/icons-material";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
@@ -287,15 +287,15 @@ export default function MiniDrawer() {
 
     {
       id: 3,
-      name: "Categories",
-      link: "/categories",
-      icon: CommuteOutlined,
-    },
-    {
-      id: 4,
       name: "Accounts",
       link: "/account",
       icon: SettingsOutlined,
+    },
+    {
+      id: 4,
+      name: "Support",
+      link: "#",
+      icon: SupportOutlined,
     },
   ];
   const dispatch = useDispatch();
@@ -493,7 +493,7 @@ export default function MiniDrawer() {
         <Grid
           item
           container
-          sx={{ background: "#eff2f5", height: "100%", pb: "5rem" }}
+          sx={{ background: "#eff2f5", minHeight: "100vh", pb: "5rem" }}
         >
           <Outlet />
         </Grid>

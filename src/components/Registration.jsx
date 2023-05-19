@@ -47,7 +47,7 @@ const Registration = () => {
   });
   const navigate = useNavigate();
   const [signUp, { isLoading: loading }] = useRegisterMutation();
-  const onSubmit = async (values, { setStatus, setSubmitting }) => {
+  const onSubmit = async (values) => {
     const {
       firstname,
       lastname,
@@ -56,7 +56,7 @@ const Registration = () => {
       phone,
       password,
       confirmPassword,
-      username,
+      // username,
     } = values;
     const body = {
       first_name: firstname,
@@ -64,7 +64,7 @@ const Registration = () => {
       email,
       phone,
       password,
-      username,
+      // username,
       vendor_name: vendor,
       password_confirmation: confirmPassword,
     };
@@ -155,21 +155,20 @@ const Registration = () => {
                     placeholder="Email"
                   />
                 </Grid>
-                <Grid item container gap={2} flexWrap="nowrap">
-                  <Grid item xs={6}>
-                    <FormikControl
-                      name="vendor"
-                      autoComplete="off"
-                      placeholder="Vendor's Name"
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
+                <Grid item container>
+                  <FormikControl
+                    name="vendor"
+                    autoComplete="off"
+                    placeholder="Vendor's Name"
+                  />
+
+                  {/* <Grid item xs={6}>
                     <FormikControl
                       name="username"
                       autoComplete="off"
                       placeholder="Username"
                     />
-                  </Grid>
+                  </Grid> */}
                 </Grid>
                 <Grid item container>
                   <FormikControl
@@ -178,21 +177,23 @@ const Registration = () => {
                     placeholder="Phone"
                   />
                 </Grid>
-                <Grid item container>
-                  <FormikControl
-                    name="password"
-                    autoComplete="off"
-                    type="password"
-                    placeholder="password"
-                  />
-                </Grid>
-                <Grid item container>
-                  <FormikControl
-                    name="confirmPassword"
-                    autoComplete="off"
-                    type="password"
-                    placeholder="Confrim Password"
-                  />
+                <Grid item container gap={2} flexWrap="nowrap">
+                  <Grid item xs={6}>
+                    <FormikControl
+                      name="password"
+                      autoComplete="off"
+                      type="password"
+                      placeholder="password"
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <FormikControl
+                      name="confirmPassword"
+                      autoComplete="off"
+                      type="password"
+                      placeholder="Confrim Password"
+                    />
+                  </Grid>
                 </Grid>
                 <Grid item container flexDirection={"column"}>
                   <Grid

@@ -66,7 +66,7 @@ const Selects = (props) => {
     placeholder,
     ...rest
   } = props;
-  console.log(rest);
+
   return (
     <Grid container direction="column">
       <Field

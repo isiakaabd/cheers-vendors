@@ -7,7 +7,6 @@ const Dashboard = () => {
   const { data: inventories, isLoading: loading } = useGetInventoriesQuery();
   // const { data: vendors, isLoading } = useGetMainVendorsQuery();
   const { data: categories, isLoading: load } = useGetAllCategoriesQuery();
-  console.log(categories);
 
   if (loading || load) return <Skeletons />; //|| load || isLoading
   const arr = [
@@ -21,17 +20,29 @@ const Dashboard = () => {
       value: categories?.length || 0,
       link: "/categories",
     },
-    // {
-    //   name: "Vendors",
-    //   // value: vendors?.length || 0,
-    //   link: "/vendors",
-    // },
+    {
+      name: "WishList",
+      value: 5000,
+      link: "#",
+    },
+    {
+      name: "Total Funding",
+      value: 20000,
+      link: "#",
+    },
   ];
 
   return (
-    <Grid item container justifyContent="space-between" gap={3} sx={{ py: 3 }}>
+    <Grid item container justifyContent="space-between" gap={2} sx={{ py: 2 }}>
       {arr?.map((item, index) => (
-        <Grid item md={3.5} sm={3.5} xs={12} key={index} sx={{ boxShadow: 0 }}>
+        <Grid
+          item
+          md={3.5}
+          sm={3.5}
+          xs={12}
+          key={index}
+          sx={{ boxShadow: 0, height: "max-content" }}
+        >
           <Card
             component={Link}
             variant="outlined"
@@ -52,7 +63,7 @@ const Dashboard = () => {
               {item.name}
             </Typography>
             <Typography variant="h4" sx={{ color: "#e4e6ef" }}>
-              {item.value}
+              {item.value?.toLocaleString()}
             </Typography>
           </Card>
         </Grid>

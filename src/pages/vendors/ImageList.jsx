@@ -1,27 +1,41 @@
-import { Grid, ImageList, ImageListItem } from "@mui/material";
+import { Avatar, Grid } from "@mui/material";
+import { PhotoProvider, PhotoView } from "react-photo-view";
 
 export default function Images({ itemData }) {
   return (
-    <Grid item container>
-      <ImageList
-        sx={{
-          display: "grid",
-          gap: "2rem",
-          width: "100%",
-          gridTemplateColumns: { md: "1fr 1fr", xs: "1fr" },
+    <PhotoProvider>
+      <Grid
+        item
+        container
+        display="grid"
+        gap={1}
+        gridTemplateColumns={{
+          xs: "repeat(auto-fill, minmax(8rem, 1fr))",
+        }}
+        gridTemplateRows={{
+          xs: "repeat(auto-fill, minmax(8rem, 1fr))",
         }}
       >
         {itemData.map((item) => (
-          <ImageListItem key={item.uuid}>
-            <img
-              src={`${item.original_url}?w=100&h=100&fit=crop&auto=format`}
-              srcSet={`${item.original_url}?w=100&h=100&fit=crop&auto=format`}
-              alt={item.name}
-              loading="lazy"
+          <PhotoView src={item.original_url} key={item.uuid}>
+            <Avatar
+              variant="square"
+              src={item.original_url}
+              alt={item.file_name}
+              sx={{
+                width: "100%",
+                height: "100%",
+                cursor: "pointer",
+                "& .MuiAvatar-img": {
+                  // objectFit: "contain !important",
+                },
+                maxHeight: "100%",
+                transition: "border 1ms linear",
+              }}
             />
-          </ImageListItem>
+          </PhotoView>
         ))}
-      </ImageList>
-    </Grid>
+      </Grid>
+    </PhotoProvider>
   );
 }

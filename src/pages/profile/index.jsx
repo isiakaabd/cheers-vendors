@@ -1,4 +1,5 @@
 import { Grid, Skeleton, Typography } from "@mui/material";
+import CustomButton from "components/CustomButton";
 import { Formik, Form } from "formik/dist";
 import React from "react";
 import { useGetVendorProfileQuery } from "redux/api/authSlice";
@@ -78,6 +79,15 @@ const Profile = () => {
                   name="phone"
                   autoComplete="off"
                   placeholder="Phone"
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={4} sx={{ mx: "auto" }}>
+                <CustomButton
+                  title="Update Profile"
+                  type="submit"
+
+                  // isSubmitting={isSubmitting}
                 />
               </Grid>
             </Grid>
