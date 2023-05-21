@@ -2,8 +2,9 @@ import { Grid, IconButton, Typography } from "@mui/material";
 import UploadIcon from "assets/svg/Upload";
 import { useFormikContext } from "formik/dist";
 import { useRef, useState, useEffect } from "react";
+import { toast } from "react-toastify";
 export const UploadComponent = ({ name, multiple, ...rest }) => {
-  const { setFieldValue, setFieldError } = useFormikContext();
+  const { setFieldValue } = useFormikContext();
   const [file, setFile] = useState({
     files: [],
     preview: [],
@@ -24,29 +25,52 @@ export const UploadComponent = ({ name, multiple, ...rest }) => {
     // }
 
     const maxSize = 5 * 1024 * 1024; // Maximum size is 5MB
-    let totalSize = 0;
+
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       const fileSize = file.size; // File size in bytes
-      totalSize += fileSize;
 
-      if (totalSize <= maxSize) {
+      if (fileSize <= maxSize) {
         const objectUrl = URL.createObjectURL(files[i]);
-        console.log(objectUrl);
+
         arr.push(objectUrl); // File size is within the limit
         // Upload the file or perform further processing
       } else {
-        setFieldError("file", "Files size is not within the limit of 5MB");
+        toast.error("Files size greater than the limit of 5MB included");
       }
     }
-    if (totalSize <= maxSize) {
-      setFile({
-        files: [...files],
-        preview: arr,
-      });
-    }
+
+    setFile({
+      files: [...files],
+      preview: arr,
+    });
+
     // }
   };
+
+  // HTML
+
+  // function handleFileUpload(files) {
+  //   const maxSize = 5 * 1024 * 1024; // Maximum size is 5MB
+
+  //   for (let i = 0; i < files.length; i++) {
+  //     const file = files[i];
+  //     const fileSize = file.size; // File size in bytes
+
+  //     if (fileSize <= maxSize) {
+  //       const objectUrl = URL.createObjectURL(files[i]);
+  //       console.log(objectUrl);
+  //       arr.push(objectUrl); // File size is within the limit
+
+  //       console.log(`File ${i + 1} is valid`);
+  //     } else {
+  //       // File size exceeds the limit
+  //       console.log(`File ${i + 1} size is too large`);
+  //       // Display an error message or take appropriate action
+  //     }
+  //   }
+  // }
+
   return (
     <Grid
       id="drop-area"

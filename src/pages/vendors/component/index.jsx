@@ -1,4 +1,4 @@
-import { Avatar, Grid, Typography } from "@mui/material";
+import { Avatar, Grid, IconButton, Typography } from "@mui/material";
 import CustomButton from "components/CustomButton";
 import { Formik, Form } from "formik/dist";
 import { useState } from "react";
@@ -11,6 +11,7 @@ import { useGetAllCategoriesQuery } from "redux/api/vendor";
 import FormikControl from "validation/FormikControl";
 import * as Yup from "yup";
 import { PhotoProvider, PhotoView } from "react-photo-view";
+import { CloseOutlined } from "@mui/icons-material";
 const validationSchema = Yup.object().shape({
   title: Yup.string().required("required"),
   price: Yup.number("Enter Amount")
@@ -40,7 +41,7 @@ const CreateInventory = ({ heading, values, setOpen, type }) => {
     const { title, category, price, description, file } = values;
     const formData = new FormData();
     const categoryId = categories?.filter((cat) => category === cat.title);
-    // console.log(values);
+
     formData.append("title", title);
     formData.append("category_id", categoryId[0].id);
     formData.append("price", price);
@@ -49,7 +50,7 @@ const CreateInventory = ({ heading, values, setOpen, type }) => {
     for (let i = 0; i < file.file.length; i++) {
       formData.append(`gallery[${i}]`, file.file[i]);
     }
-    console.log(formData);
+
     const { data, error } = await createInventory(formData);
     if (data) {
       toast.success(data?.message);
@@ -134,7 +135,7 @@ const CreateInventory = ({ heading, values, setOpen, type }) => {
           initialValues={type === "edit" ? values : initialValues}
           onSubmit={type === "edit" ? handleSubmit : handleCreateInventory}
         >
-          {({ isSubmitting, values, errors }) => {
+          {({ isSubmitting, values, errors, setFieldValue }) => {
             return (
               <Form style={{ width: "100%" }}>
                 <Grid item container gap={2}>
@@ -184,12 +185,51 @@ const CreateInventory = ({ heading, values, setOpen, type }) => {
                           key={idx}
                           item
                           sx={{
-                            p: 0.5,
+                            // p: 0.5,
+                            position: "relative",
+                            width: "100%",
+
                             border: `.3rem solid ${
                               idx === active ? "#a80a69" : "#F6F6F6"
                             }`,
                           }}
                         >
+                          <IconButton
+                            onClick={() => {
+                              const y = values.file.file.filter(
+                                (_, index) => index !== idx
+                              );
+                              const x = values.file.preview.filter(
+                                (_, index) => index !== idx
+                              );
+
+                              setFieldValue("file", {
+                                file: y,
+                                preview: x,
+                              });
+
+                              if (x.length - 1 > idx) setActive(idx + 1);
+                              if (idx === 0) setActive(0);
+                              else setActive(idx - 1);
+                            }}
+                            sx={{
+                              mr: 0.5,
+                              position: "absolute",
+                              top: "-10px",
+                              right: "-10px",
+                              zIndex: 300,
+                              "&:hover": {
+                                backgroundColor: "#a80a69",
+                              },
+                              backgroundColor: "#a80a69",
+                            }}
+                            size="small"
+                            edge="end"
+                          >
+                            <CloseOutlined
+                              sx={{ fontSize: "1.2rem", color: "#fff" }}
+                            />
+                          </IconButton>
                           <PhotoView key={idx} src={item}>
                             <Avatar
                               variant="square"
@@ -197,8 +237,10 @@ const CreateInventory = ({ heading, values, setOpen, type }) => {
                               sx={{
                                 cursor: "pointer",
                                 "& .MuiAvatar-img": {
-                                  objectFit: "contain !important",
+                                  objectFit: "cover !important",
+                                  width: "100%",
                                 },
+                                width: "100%",
                                 maxHeight: "100%",
                                 transition: "border 1ms linear",
                               }}

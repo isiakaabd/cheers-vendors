@@ -7,7 +7,7 @@ import FormikControl from "validation/FormikControl";
 
 const Profile = () => {
   const { data: profile, isLoading, error } = useGetVendorProfileQuery();
-  console.log(profile);
+
   if (isLoading) return <Skeletons />;
 
   if (error) return <Typography>Something went wrong..</Typography>;

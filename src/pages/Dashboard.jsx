@@ -11,7 +11,7 @@ const Dashboard = () => {
   if (loading || load) return <Skeletons />; //|| load || isLoading
   const arr = [
     {
-      name: "Inventories",
+      name: "Inventory",
       value: inventories?.data?.length || 0,
       link: "/inventories",
     },
