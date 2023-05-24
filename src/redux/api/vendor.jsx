@@ -11,7 +11,13 @@ export const adminSlice = api.injectEndpoints({
       transformResponse: (response) => response.data,
       transformErrorResponse: (error) => error.message,
     }),
-
+    getUtilizeCategories: builder.query({
+      query: () => ({
+        url: `/inventories/get-utilized-categories`,
+      }),
+      invalidatesTags: ["categories"],
+      transformResponse: (response) => response.data,
+    }),
     getCategory: builder.query({
       query: (categoryId) => ({
         url: `/categories/${categoryId}`,
@@ -22,4 +28,8 @@ export const adminSlice = api.injectEndpoints({
     }),
   }),
 });
-export const { useGetAllCategoriesQuery, useGetCategoryQuery } = adminSlice;
+export const {
+  useGetAllCategoriesQuery,
+  useGetUtilizeCategoriesQuery,
+  useGetCategoryQuery,
+} = adminSlice;

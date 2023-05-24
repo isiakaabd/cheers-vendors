@@ -2,13 +2,14 @@ import { Grid, Card, Typography, Skeleton } from "@mui/material";
 
 import { useGetInventoriesQuery } from "redux/api/inventory";
 import { Link } from "react-router-dom";
-import { useGetAllCategoriesQuery } from "redux/api/vendor";
+import { useGetUtilizeCategoriesQuery } from "redux/api/vendor";
 const Dashboard = () => {
   const { data: inventories, isLoading: loading } = useGetInventoriesQuery();
-  // const { data: vendors, isLoading } = useGetMainVendorsQuery();
-  const { data: categories, isLoading: load } = useGetAllCategoriesQuery();
+  const { data: utilizedCategories, isLoading } =
+    useGetUtilizeCategoriesQuery();
 
-  if (loading || load) return <Skeletons />; //|| load || isLoading
+  if (loading || isLoading) return <Skeletons />; //|| load || isLoading
+
   const arr = [
     {
       name: "Inventory",
@@ -16,17 +17,17 @@ const Dashboard = () => {
       link: "/inventories",
     },
     {
-      name: "Total Categories",
-      value: categories?.length || 0,
+      name: " Categories",
+      value: utilizedCategories?.length || 0,
       link: "/categories",
     },
     {
-      name: "WishList",
+      name: "WishListed Items",
       value: 5000,
       link: "#",
     },
     {
-      name: "Total Funding",
+      name: "Funded Item",
       value: 20000,
       link: "#",
     },

@@ -7,6 +7,8 @@ export const patterns = {
   Category: "categories/{id}",
   Inventory: "inventories/{id}",
   Profile: "account",
+  Support: "support",
+  Orders: "orders",
 };
 
 const isRootPath = (path) =>

@@ -11,8 +11,7 @@ const Profile = () => {
   if (isLoading) return <Skeletons />;
 
   if (error) return <Typography>Something went wrong..</Typography>;
-  const { email, first_name, vendor_name, username, last_name, phone } =
-    profile;
+  const { email, first_name, vendor_name, last_name, phone } = profile;
   return (
     <Grid item container>
       <Grid item sx={{ mx: "auto" }} md={8} xs={12}>
@@ -26,7 +25,7 @@ const Profile = () => {
             email: email || "",
             phone: phone || "",
             vendor_name: vendor_name || "",
-            username: username || "",
+            // username: username || "",
           }}
         >
           <Form noValidate>
@@ -51,21 +50,12 @@ const Profile = () => {
                   />
                 </Grid>
               </Grid>
-              <Grid item container gap={2} flexWrap="nowrap">
-                <Grid item xs={6}>
-                  <FormikControl
-                    name="vendor_name"
-                    autoComplete="off"
-                    placeholder="Vendor Name"
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <FormikControl
-                    name="username"
-                    autoComplete="off"
-                    placeholder="User name"
-                  />
-                </Grid>
+              <Grid item container>
+                <FormikControl
+                  name="vendor_name"
+                  autoComplete="off"
+                  placeholder="Vendor Name"
+                />
               </Grid>
               <Grid item container>
                 <FormikControl

@@ -4,7 +4,7 @@ import { Grid, TextField } from "@mui/material";
 import { TextError } from "./TextError";
 
 const Text = ({ ...rest }) => (
-  <TextField id="outlined-multiline-static" {...rest} multiline />
+  <TextField id="outlined-multiline-static" {...rest} multiline minRows={5} />
 );
 const TextArea = (props) => {
   const { name, ...rest } = props;

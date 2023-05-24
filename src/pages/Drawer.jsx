@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useLayoutEffect } from "react";
 import { styled, useTheme } from "@mui/material/styles";
 
 import {
@@ -30,6 +30,7 @@ import {
   ChevronLeftOutlined,
   LogoutOutlined,
   SupportOutlined,
+  CardTravelRounded,
 } from "@mui/icons-material";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
@@ -286,15 +287,21 @@ export default function MiniDrawer() {
     },
 
     {
-      id: 3,
+      id: 2,
       name: "Accounts",
       link: "/account",
       icon: SettingsOutlined,
     },
     {
+      id: 3,
+      name: "Orders",
+      link: "/orders",
+      icon: CardTravelRounded,
+    },
+    {
       id: 4,
       name: "Support",
-      link: "#",
+      link: "/support",
       icon: SupportOutlined,
     },
   ];
@@ -311,8 +318,17 @@ export default function MiniDrawer() {
     }
     if (error) toast.error(error);
   };
-  const navigate = useNavigate();
   const [id, setId] = useState(0);
+  const location = useLocation();
+  useLayoutEffect(() => {
+    sidebarItem.map((page) =>
+      page.link === location.pathname ? setId(page.id) : null
+    );
+
+    //eslint-disable-next-line
+  }, []);
+  const navigate = useNavigate();
+
   return (
     <Box sx={{ display: "flex", width: "100%", height: "100%" }}>
       <CssBaseline />
@@ -417,6 +433,7 @@ export default function MiniDrawer() {
                 }}
               >
                 <ListItemIcon
+                  title={text.name}
                   sx={{
                     minWidth: 0,
                     color: "inherit",
