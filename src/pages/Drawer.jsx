@@ -42,7 +42,10 @@ import images from "assets/images";
 import { useDispatch } from "react-redux";
 import { logOut } from "redux/auth/auth.reducers";
 import { toast } from "react-toastify";
-import { useLogoutMutation } from "redux/api/authSlice";
+import {
+  useGetVendorProfileQuery,
+  useLogoutMutation,
+} from "redux/api/authSlice";
 
 const drawerWidth = 260;
 
@@ -288,7 +291,7 @@ export default function MiniDrawer() {
 
     {
       id: 2,
-      name: "Accounts",
+      name: "Account",
       link: "/account",
       icon: SettingsOutlined,
     },
@@ -327,6 +330,8 @@ export default function MiniDrawer() {
 
     //eslint-disable-next-line
   }, []);
+  const { data: profile, isLoading, isError } = useGetVendorProfileQuery();
+
   const navigate = useNavigate();
 
   return (
@@ -335,27 +340,55 @@ export default function MiniDrawer() {
       <AppBar
         position="fixed"
         open={open}
-        sx={{ shadow: 0, background: "#eff2f5" }}
+        sx={{ shadow: 0, py: 1, background: "#eff2f5" }}
       >
         <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            sx={{
-              marginRight: 5,
-              color: "#1a1a27",
-              "&:hover": {
+          <Grid item flex={1}>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleDrawerOpen}
+              edge="start"
+              sx={{
+                marginRight: 5,
                 color: "#1a1a27",
-              },
-              ...(open && { display: "none" }),
-            }}
-          >
-            <MenuIcon sx={{ fontSize: "3rem" }} />
-          </IconButton>
+                "&:hover": {
+                  color: "#1a1a27",
+                },
+                ...(open && { display: "none" }),
+              }}
+            >
+              <MenuIcon sx={{ fontSize: "3rem" }} />
+            </IconButton>
 
-          <HeaderText />
+            <HeaderText />
+          </Grid>
+          <Grid item>
+            <Grid item container alignItems="center" flexWrap="nowrap" gap={2}>
+              <Avatar
+                src={profile?.profile_picture}
+                color="primary"
+                sx={{
+                  fontSize: "2rem",
+                  letterSpacing: ".1em",
+                  backgroundColor: "#a80a69",
+                  fontWeight: 700,
+                }}
+              >
+                {profile?.first_name?.slice(0, 1)?.toUpperCase()}
+                {profile?.last_name?.slice(0, 1)?.toUpperCase()}
+              </Avatar>
+
+              <Typography
+                variant="h1"
+                sx={{
+                  color: "#000",
+                }}
+              >
+                {isLoading || isError ? "Vendor" : profile?.vendor_name}
+              </Typography>
+            </Grid>
+          </Grid>
         </Toolbar>
       </AppBar>
       <Drawer

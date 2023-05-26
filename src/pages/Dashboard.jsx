@@ -18,7 +18,7 @@ const Dashboard = () => {
     },
     {
       name: " Categories",
-      value: utilizedCategories?.length || 0,
+      value: utilizedCategories || 0,
       link: "/categories",
     },
     {

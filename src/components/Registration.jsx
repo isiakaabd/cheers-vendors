@@ -41,7 +41,8 @@ const Registration = () => {
       .oneOf([Yup.ref("password"), null], "Passwords must match")
       .required("Password is required"),
 
-    acceptTerms: Yup.bool().required(
+    acceptTerms: Yup.bool().oneOf(
+      [true],
       "You must accept the terms and conditions"
     ),
   });
@@ -68,21 +69,25 @@ const Registration = () => {
       vendor_name: vendor,
       password_confirmation: confirmPassword,
     };
-    const { data, error } = await signUp(body);
-    if (data) {
-      setTimeout(() => {
-        navigate({
-          pathname: "/auth/verify",
-          search: `?email=${email}`,
-        });
-        toast.success(data);
-      }, 3000);
+    try {
+      const { data } = await signUp(body);
+      if (data) {
+        setTimeout(() => {
+          navigate({
+            pathname: "/auth/verify",
+            search: `?email=${email}`,
+          });
+          toast.success(data);
+        }, 3000);
+      }
       // setTimeout(() => (window.location.href = "/auth/verify?email=" + email), 3000)
+    } catch (error) {
+      if (error?.email) toast.error(error.email[0]);
+      else if (error?.phone) toast.error(error.phone[0]);
+      else toast.error(error || "something went wrong");
     }
-    if (error?.email) toast.error(error.email[0]);
-
-    if (error?.phone) toast.error(error.phone[0]);
   };
+
   return (
     <Grid item container>
       <Formik
@@ -191,7 +196,7 @@ const Registration = () => {
                       name="confirmPassword"
                       autoComplete="off"
                       type="password"
-                      placeholder="Confrim Password"
+                      placeholder="Confirm Password"
                     />
                   </Grid>
                 </Grid>
