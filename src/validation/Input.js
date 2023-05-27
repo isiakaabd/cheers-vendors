@@ -2,7 +2,8 @@ import { Field, ErrorMessage } from "formik/dist";
 import PropTypes from "prop-types";
 import { Grid, TextField, Typography } from "@mui/material";
 import { TextError } from "./TextError";
-const Text = ({ placeholder, ...rest }) => {
+const Text = ({ placeholder, endAdornment, ...rest }) => {
+  console.log(endAdornment);
   return (
     <TextField
       id="outlined-basic"
@@ -10,6 +11,7 @@ const Text = ({ placeholder, ...rest }) => {
       size="small"
       label={placeholder}
       variant="filled"
+      InputProps={{ endAdornment }}
     />
   );
 };
@@ -17,7 +19,6 @@ const Text = ({ placeholder, ...rest }) => {
 const Input = (props) => {
   const { label, name, type, borderRadius, helperText, styles, ...rest } =
     props;
-  // const classes = useStyles();
   return (
     <Grid container direction="column">
       <Field
@@ -26,16 +27,6 @@ const Input = (props) => {
         type={type ? type : "text"}
         {...rest}
         as={Text}
-        // style={{
-        //   minHeight: "4rem",
-        //   borderRadius: borderRadius ? borderRadius : "1rem",
-        //   outline: 0,
-        //   padding: "0.5rem 1.5rem",
-        //   width: "100%",
-        //   ...styles,
-        //   color: "#828484",
-        //   border: "1px solid rgba(0,0,0,0.2)",
-        // }}
       />
       {helperText && (
         <Typography

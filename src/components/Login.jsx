@@ -1,4 +1,4 @@
-import { Grid, Typography } from "@mui/material";
+import { Grid, IconButton, InputAdornment, Typography } from "@mui/material";
 import { Formik, Form } from "formik/dist";
 import { Link, useNavigate } from "react-router-dom";
 import FormikControl from "validation/FormikControl";
@@ -9,6 +9,8 @@ import { useLoginMutation } from "redux/api/authSlice";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { getToken } from "redux/auth/auth.reducers";
+import { useState } from "react";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 const loginSchema = Yup.object().shape({
   email: Yup.string()
@@ -41,6 +43,12 @@ const Login = (props) => {
       setTimeout(() => navigate("/dashboard"), 2000);
     }
   };
+  const [showPassword, setShowPassword] = useState(false);
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
   return (
     <Grid item container>
       <Formik
@@ -86,11 +94,23 @@ const Login = (props) => {
               </Grid>
               <Grid item container>
                 <FormikControl
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   placeholder="Password"
                   name="password"
                   autoComplete="off"
                   autoSave="off"
+                  endAdornment={
+                    <InputAdornment>
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
                 />
                 <Grid item sx={{ ml: "auto", mt: 1 }}>
                   <Typography
