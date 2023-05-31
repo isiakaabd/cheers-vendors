@@ -5,15 +5,14 @@ import { Link } from "react-router-dom";
 
 function SupportCard({ Icon, subHeading, to, heading }) {
   return (
-    <Card sx={{ width: "100%" }}>
+    <Card sx={{ width: "100%", px: 2, py: 4 }}>
       <CardContent>
         <Grid
           item
           container
           alignItems="center"
+          flexWrap="nowrap"
           justifyContent={"space-between"}
-          px={2}
-          py={4}
         >
           <Grid item>
             <Icon
