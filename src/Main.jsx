@@ -27,7 +27,7 @@ function Main() {
     };
     //eslint-disable-next-line
   }, []);
-  console.log(muiTheme);
+
   return (
     <div className="container">
       <Routes>
