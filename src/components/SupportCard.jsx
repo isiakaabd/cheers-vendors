@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 function SupportCard({ Icon, subHeading, to, heading }) {
   return (
-    <Card sx={{ width: "100%", px: 2, py: 4 }}>
+    <Card sx={{ width: "100%", px: 1, py: 4 }}>
       <CardContent>
         <Grid
           item
@@ -25,7 +25,9 @@ function SupportCard({ Icon, subHeading, to, heading }) {
           </Grid>
           <Grid item>
             <Grid item container flexDirection="column" gap={2}>
-              <Typography variant="h3">{heading}</Typography>
+              <Typography sx={{ fontSize: { md: "2rem", xs: "1.5rem" } }}>
+                {heading}
+              </Typography>
               <Typography color="info" variant="h5">
                 {subHeading}
               </Typography>
