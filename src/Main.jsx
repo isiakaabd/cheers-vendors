@@ -1,8 +1,7 @@
-import { ThemeProvider } from "@emotion/react";
 import { useEffect } from "react";
-import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import { muiTheme } from "./muiTheme";
-import Splash from "./Splash";
+
 import Home from "./Home";
 
 function Main() {
@@ -26,7 +25,9 @@ function Main() {
       document.removeEventListener("keydown", resetTimer);
       document.removeEventListener("mousemove", resetTimer);
     };
+    //eslint-disable-next-line
   }, []);
+  console.log(muiTheme);
   return (
     <div className="container">
       <Routes>

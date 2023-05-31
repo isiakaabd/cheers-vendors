@@ -6,8 +6,10 @@ export const patterns = {
   Settings: "account/settings",
   Category: "categories/{id}",
   Inventory: "inventories/{id}",
-  Profile: "account",
   Support: "support",
+  FAQ: "support/faq",
+  "Live Support": "support/form",
+  Profile: "account",
   Orders: "orders",
 };
 

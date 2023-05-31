@@ -81,12 +81,7 @@ const Inventories = () => {
         </Card>
       </Grid>
 
-      <Dialogs
-        isOpen={open}
-        handleClose={(e) => {
-          setOpen(false);
-        }}
-      >
+      <Dialogs isOpen={open} handleClose={() => setOpen(false)}>
         <CreateInventory
           open={open}
           setOpen={setOpen}

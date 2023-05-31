@@ -7,6 +7,8 @@ import Profile from "pages/profile";
 import Inventory from "pages/vendors/Inventory";
 import Support from "pages/support";
 import Orders from "pages/orders";
+import SupportForm from "components/SupportForm";
+import SupportFAQ from "components/SupportFAQ";
 
 const PrivateRoutes = () => {
   return (
@@ -22,6 +24,8 @@ const PrivateRoutes = () => {
         <Route path="categories" element={<Categories />} />
         <Route path="account" element={<Profile />} />
         <Route path="support" element={<Support />} />
+        <Route path="support/faq" element={<SupportFAQ />} />
+        <Route path="support/form" element={<SupportForm />} />
 
         <Route index element={<Inventories />} />
       </Route>

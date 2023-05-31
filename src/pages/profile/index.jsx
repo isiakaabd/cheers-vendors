@@ -2,6 +2,7 @@ import { Avatar, Grid, Skeleton, Typography } from "@mui/material";
 import CustomButton from "components/CustomButton";
 import { Formik, Form } from "formik/dist";
 import { PhotoProvider, PhotoView } from "react-photo-view";
+import { toast } from "react-toastify";
 import { useGetVendorProfileQuery } from "redux/api/authSlice";
 import { useUpdateProfileMutation } from "redux/api/vendor";
 import FormikControl from "validation/FormikControl";
@@ -37,19 +38,43 @@ const Profile = () => {
 
   if (error) return <Typography>Something went wrong..</Typography>;
   const onSubmit = async (values) => {
-    const { firstname, lastname, email, phone, vendor_name, profile_picture } =
-      values;
+    const { firstname, lastname, email, phone, vendor_name, file } = values;
+    const formData = new FormData();
 
-    await updateProfile({
-      first_name: firstname,
-      last_name: lastname,
-      email,
-      phone,
-      vendor_name,
-      profile_picture,
-    });
+    formData.append("first_name", firstname);
+    formData.append("last_name", lastname);
+    formData.append("email", email);
+    formData.append("phone", phone);
+    formData.append("vendor_name", vendor_name);
+
+    if (file.file.length > 0) {
+      formData.append(`profile_picture`, file.file[0]);
+    }
+    // const datas = {
+    //   first_name: firstname,
+    //   last_name: lastname,
+    //   email,
+    //   phone,
+    //   vendor_name,
+    // };
+    // if (file?.file.length > 0) {
+    //   console.log(file.file[0]);
+    //   datas.profile_picture = file.file[0];
+    // }
+
+    try {
+      const { data } = await updateProfile(formData);
+
+      if (data) toast.success(data);
+    } catch (err) {
+      console.log(err);
+      let picsError = err?.errors?.profile_picture;
+      console.log(picsError);
+      toast.error(picsError[0] || err.message || "Something went wrong..");
+    }
   };
-  const { email, first_name, vendor_name, last_name, phone } = profile;
+  const { email, first_name, vendor_name, last_name, phone, profile_picture } =
+    profile;
   return (
     <Grid item container>
       <Grid item sx={{ mx: "auto" }} md={8} xs={12}>
@@ -63,6 +88,7 @@ const Profile = () => {
             email: email || "",
             phone: phone || "",
             vendor_name: vendor_name || "",
+            file: profile_picture || null,
             // username: username || "",
           }}
         >

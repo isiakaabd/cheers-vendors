@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import { Grid, TextField, Typography } from "@mui/material";
 import { TextError } from "./TextError";
 const Text = ({ placeholder, endAdornment, ...rest }) => {
-  console.log(endAdornment);
   return (
     <TextField
       id="outlined-basic"
