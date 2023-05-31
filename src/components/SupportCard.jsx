@@ -12,6 +12,7 @@ function SupportCard({ Icon, subHeading, to, heading }) {
           container
           alignItems="center"
           flexWrap="nowrap"
+          flexDirection={{ xs: "column", md: "row" }}
           justifyContent={"space-between"}
         >
           <Grid item>
@@ -24,7 +25,13 @@ function SupportCard({ Icon, subHeading, to, heading }) {
             />
           </Grid>
           <Grid item>
-            <Grid item container flexDirection="column" gap={2}>
+            <Grid
+              item
+              container
+              flexDirection="column"
+              alignItems={{ xs: "center" }}
+              gap={{ xs: 4, md: 2 }}
+            >
               <Typography sx={{ fontSize: { md: "2rem", xs: "1.5rem" } }}>
                 {heading}
               </Typography>
@@ -34,7 +41,7 @@ function SupportCard({ Icon, subHeading, to, heading }) {
             </Grid>
           </Grid>
 
-          <Grid item>
+          <Grid item mt={{ xs: 3, md: 0 }}>
             <IconButton color="primary" component={Link} to={to}>
               <ArrowForwardIosOutlined sx={{ fontSize: "3rem" }} />
             </IconButton>

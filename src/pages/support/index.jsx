@@ -4,8 +4,8 @@ import { SupportCard } from "components";
 
 const Support = () => {
   return (
-    <Grid item container justifyContent={"space-between"}>
-      <Grid item md={5} xs={10}>
+    <Grid item container justifyContent={"space-between"} mt={{ xs: 0, md: 4 }}>
+      <Grid item md={5} xs={12}>
         <SupportCard
           Icon={QuestionAnswerOutlined}
           heading={"Check FAQs"}
@@ -13,7 +13,7 @@ const Support = () => {
           subHeading={"Browse our extensive Help Articles"}
         />
       </Grid>
-      <Grid item md={5} xs={10}>
+      <Grid item md={5} xs={12}>
         <SupportCard
           Icon={SupportAgentSharp}
           to={"form"}
