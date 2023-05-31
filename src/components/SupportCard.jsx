@@ -17,7 +17,7 @@ function SupportCard({ Icon, subHeading, to, heading }) {
           <Grid item>
             <Icon
               sx={({ shadows }) => ({
-                fontSize: "4rem",
+                fontSize: "3rem",
                 boxShadow: shadows[1],
               })}
               color="primary"
@@ -25,8 +25,8 @@ function SupportCard({ Icon, subHeading, to, heading }) {
           </Grid>
           <Grid item>
             <Grid item container flexDirection="column" gap={2}>
-              <Typography variant="h1">{heading}</Typography>
-              <Typography color="info" variant="h4">
+              <Typography variant="h3">{heading}</Typography>
+              <Typography color="info" variant="h5">
                 {subHeading}
               </Typography>
             </Grid>
