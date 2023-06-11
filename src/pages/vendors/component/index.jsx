@@ -18,14 +18,6 @@ const validationSchema = Yup.object().shape({
     .typeError("Enter Amount")
     .required("required"),
   description: Yup.string().required("required"),
-
-  // // file: Yup.mixed().test("file", "The file is too large", (value) => {
-  //   console.log(value);
-  //   if (!value) {
-  //     return true; // Empty file is valid
-  //   }
-  //   return value.size <= 5 * 1024 * 1024; // Maximum size is 5MB
-  // }),
 });
 
 const CreateInventory = ({ heading, values, setOpen, type }) => {
@@ -36,11 +28,13 @@ const CreateInventory = ({ heading, values, setOpen, type }) => {
     label: category.title,
     value: category.title,
   }));
+
+  // console.log(editCategory);
   const [active, setActive] = useState(0);
   const handleCreateInventory = async (values) => {
     const { title, category, price, description, file } = values;
-    const formData = new FormData();
     const categoryId = categories?.filter((cat) => category === cat.title);
+    const formData = new FormData();
 
     formData.append("title", title);
     formData.append("category_id", categoryId[0].id);
@@ -82,11 +76,12 @@ const CreateInventory = ({ heading, values, setOpen, type }) => {
 
   const handleSubmit = async (values) => {
     const { title, category, price, description, file } = values;
+    const categoryId = categories?.filter((cat) => category === cat.title);
 
     const formData = new FormData();
     formData.append("_method", "put");
     formData.append("title", title);
-    formData.append("category_id", category);
+    formData.append("category_id", categoryId[0]?.id);
     formData.append("price", price);
     formData.append("description", description);
     if (file?.length > 0) {

@@ -139,7 +139,7 @@ const CustomHeaderTitle = ({ title }) => {
 const Crumb = ({ breadcrumbs }) => {
   //   const history = useHi();
   const [isOpen, setIsOpen] = useState(false);
-  const previousText = breadcrumbs[breadcrumbs.length - 2].pageTitle;
+
   const previousIndex = breadcrumbs[breadcrumbs.length - 2].pageIndex;
 
   const handleClickAway = () => {
@@ -149,21 +149,11 @@ const Crumb = ({ breadcrumbs }) => {
   return (
     <Grid container alignItems="center" sx={{ position: "relative" }}>
       <Grid item>
-        <Grid
-          container
-          alignItems="center"
-          onClick={() => navigate(previousIndex)}
-          //  onClick={() => history.go(previousIndex)}
-          sx={{ cursor: "pointer" }}
-        >
-          <ArrowBackIosNewOutlined
-            fontSize="medium"
-            sx={{ marginRight: "0.5rem", color: "#3E5EA9" }}
-          />{" "}
-          <Typography variant="p" sx={{ color: "#3E5EA9" }}>
-            Back to {previousText}
-          </Typography>
-        </Grid>
+        {/* <Grid container alignItems="center" sx={{ cursor: "pointer" }}> */}
+        <IconButton edge="start" onClick={() => navigate(previousIndex)}>
+          <ArrowBackIosNewOutlined fontSize="large" color="secondary" />
+        </IconButton>
+        {/* </Grid> */}
       </Grid>
       {breadcrumbs.length > 2 ? (
         <ClickAwayListener onClickAway={handleClickAway}>
@@ -176,10 +166,7 @@ const Crumb = ({ breadcrumbs }) => {
               cursor: "pointer",
             }}
           >
-            <KeyboardArrowDownOutlined
-              fontSize="medium"
-              sx={{ color: "#3E5EA9" }}
-            />
+            <KeyboardArrowDownOutlined fontSize="medium" />
           </Grid>
         </ClickAwayListener>
       ) : null}

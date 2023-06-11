@@ -1,14 +1,18 @@
-import { DeleteOutline, MoreHorizOutlined } from "@mui/icons-material";
+import {
+  DeleteOutline,
+  EditOutlined,
+  MoreHorizOutlined,
+} from "@mui/icons-material";
 import {
   Grid,
   Card,
-  TableRow,
   TableCell,
   Skeleton,
   IconButton,
   MenuItem,
   ListItemIcon,
   ListItemText,
+  Checkbox,
 } from "@mui/material";
 import EmptyCell from "components/EmptyTable";
 import BasicTable from "components/Table";
@@ -20,18 +24,26 @@ import {
 import { getTimeMoment } from "utilis";
 import BasicMenu from "components/MenuComponent";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
+import Dialogs from "components/Dialog";
+import CreateInventory from "pages/vendors/component";
 
 const Orders = () => {
   const { data: inventories, isLoading: loading } = useGetInventoriesQuery();
-
+  const [selected, setSelected] = useState([]);
   if (loading) return <Skeletons />;
+
   const headcells = [
     "Name",
-    "Created At",
-    "Price",
-    "Description",
-    "Category",
+    "Order No",
+    "Product SKU",
+    "Confirmation No",
+    "Updated Date",
+    "Customer Info",
+    "Shipment Method",
+    "Settlement",
+    "Status",
+
     "",
   ];
   return (
@@ -49,31 +61,30 @@ const Orders = () => {
             <BasicTable
               tableHead={headcells}
               rows={inventories}
-              paginationLabel="inventories per page"
-              hasCheckbox={false}
-              per_page={inventories?.per_page}
+              setSelected={setSelected}
+              selected={selected}
+              paginationLabel="Orders per page"
+              hasCheckbox
+              per_page={inventories?.per_paWge}
               totalPage={inventories?.to}
               nextPageUrl={inventories?.next_page_url}
             >
               {inventories?.data?.map((row) => (
-                <Rows key={row.id} row={row} />
+                <Rows key={row.id} row={row} hasCheckbox={true} />
               ))}
             </BasicTable>
           </Grid>
         ) : (
-          <EmptyCell
-            paginationLabel="Availability  per page"
-            headCells={headcells}
-          />
+          <EmptyCell paginationLabel="Orders  per page" headCells={headcells} />
         )}
       </Card>
     </Grid>
   );
 };
 
-function Rows({ row }) {
+function Rows({ row, hasCheckbox, setSelected, selected }) {
   const { id, description, category, price, title, created_at } = row;
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [deleteInventory, { isLoading: deleting, status }] =
     useDeleteInventoryMutation();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -98,48 +109,120 @@ function Rows({ row }) {
     if (error) toast.error(error);
   };
 
+  const handleClicks = (event, row) => {
+    // console.log(title);
+    const selectedIndex = selected.indexOf(row);
+    selected.indexOf(row);
+    let newSelected = [];
+
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selected, row);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selected.slice(1));
+    } else if (selectedIndex === selected.length - 1) {
+      newSelected = newSelected.concat(selected.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(
+        selected.slice(0, selectedIndex),
+        selected.slice(selectedIndex + 1)
+      );
+    }
+
+    setSelected(newSelected);
+  };
+  const isSelected = (id) => selected?.indexOf(id) !== -1;
+  const isItemSelected = isSelected(id);
+  const [edit, setEdit] = useState(false);
+  const initials = {
+    id,
+    title,
+    description,
+    price,
+    category: category.title,
+  };
   return (
     <>
-      <TableRow
-        tabIndex={-1}
-        sx={{ cursor: "pointer" }}
-        onClick={() => navigate(`${id}`)}
+      {hasCheckbox && (
+        <TableCell padding="checkbox">
+          <Checkbox
+            size="large"
+            color="primary"
+            onClick={(event) => handleClicks(event, id)}
+            checked={isItemSelected}
+          />
+        </TableCell>
+      )}
+
+      <TableCell scope="row" align="left">
+        {title}
+      </TableCell>
+      <TableCell scope="row" align="left">
+        {title}
+      </TableCell>
+      <TableCell scope="row" align="left">
+        {title}
+      </TableCell>
+      <TableCell scope="row" align="left">
+        {title}
+      </TableCell>
+      <TableCell align="left">{getTimeMoment(created_at)}</TableCell>
+      <TableCell align="left">{price}</TableCell>
+      <TableCell align="left">{description}</TableCell>
+      <TableCell align="left">{category?.title}</TableCell>
+      <TableCell align="left">
+        <IconButton
+          id="basic-button"
+          aria-controls={open ? "basic-menu" : undefined}
+          aria-haspopup="true"
+          aria-expanded={open ? "true" : undefined}
+          onClick={handleClick}
+        >
+          <MoreHorizOutlined />
+        </IconButton>
+
+        <BasicMenu
+          open={open}
+          anchorEl={anchorEl}
+          setAnchorEl={setAnchorEl}
+          handleClick={handleClick}
+          handleClose={handleClose}
+        >
+          <MenuItem onClick={handleDelete} sx={{ color: "red" }}>
+            <ListItemIcon>
+              <DeleteOutline fontSize="large" sx={{ color: "red" }} />
+            </ListItemIcon>
+
+            <ListItemText>{!deleting ? "Delete" : "Deleting"}</ListItemText>
+          </MenuItem>
+          <MenuItem
+            onClick={(e) => {
+              setEdit(true);
+              handleClose(e);
+            }}
+          >
+            <ListItemIcon>
+              <EditOutlined fontSize="large" />
+            </ListItemIcon>
+
+            <ListItemText>Edit </ListItemText>
+          </MenuItem>
+        </BasicMenu>
+      </TableCell>
+      <Dialogs
+        isOpen={edit}
+        handleClose={(e) => {
+          setEdit(false);
+          handleClose(e);
+        }}
       >
-        <TableCell scope="row" align="left">
-          {title}
-        </TableCell>
-        <TableCell align="left">{getTimeMoment(created_at)}</TableCell>
-        <TableCell align="left">{price}</TableCell>
-        <TableCell align="left">{description}</TableCell>
-        <TableCell align="left">{category?.title}</TableCell>
-        <TableCell align="left">
-          <IconButton
-            id="basic-button"
-            aria-controls={open ? "basic-menu" : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? "true" : undefined}
-            onClick={handleClick}
-          >
-            <MoreHorizOutlined />
-          </IconButton>
-
-          <BasicMenu
-            open={open}
-            anchorEl={anchorEl}
-            setAnchorEl={setAnchorEl}
-            handleClick={handleClick}
-            handleClose={handleClose}
-          >
-            <MenuItem onClick={handleDelete} sx={{ color: "red" }}>
-              <ListItemIcon>
-                <DeleteOutline fontSize="large" sx={{ color: "red" }} />
-              </ListItemIcon>
-
-              <ListItemText>{!deleting ? "Delete" : "Deleting"}</ListItemText>
-            </MenuItem>
-          </BasicMenu>
-        </TableCell>
-      </TableRow>
+        <CreateInventory
+          // open={open}
+          setOpen={setEdit}
+          values={initials}
+          type="edit"
+          heading={"Edit Inventory"}
+        />
+      </Dialogs>
     </>
   );
 }

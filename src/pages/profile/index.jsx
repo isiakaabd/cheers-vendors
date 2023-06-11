@@ -76,127 +76,179 @@ const Profile = () => {
   const { email, first_name, vendor_name, last_name, phone, profile_picture } =
     profile;
   return (
-    <Grid item container>
-      <Grid item sx={{ mx: "auto" }} md={8} xs={12}>
-        <Formik
-          enableReinitialize
-          onSubmit={onSubmit}
-          validationSchema={validationSchema}
-          initialValues={{
-            firstname: first_name || "",
-            lastname: last_name || "",
-            email: email || "",
-            phone: phone || "",
-            vendor_name: vendor_name || "",
-            file: profile_picture || null,
-            // username: username || "",
-          }}
-        >
-          {({ values, errors, isSubmitting }) => (
-            <Form noValidate>
-              <Typography sx={{ mb: 2 }} variant="h1">
-                Profile
-              </Typography>
+    <Grid item cotainer flexDirection="column" gap={6}>
+      <Grid item container>
+        <Grid item sx={{ mx: "auto" }} md={8} xs={12}>
+          <Formik
+            enableReinitialize
+            onSubmit={onSubmit}
+            validationSchema={validationSchema}
+            initialValues={{
+              firstname: first_name || "",
+              lastname: last_name || "",
+              email: email || "",
+              phone: phone || "",
+              vendor_name: vendor_name || "",
+              file: profile_picture || null,
+              // username: username || "",
+            }}
+          >
+            {({ values, errors, isSubmitting }) => (
+              <Form noValidate>
+                <Typography sx={{ mb: 2 }} variant="h1">
+                  Profile
+                </Typography>
 
-              <Grid item container gap={2}>
-                <Grid item container gap={2} flexWrap="nowrap">
-                  <Grid item xs={6}>
+                <Grid item container gap={2}>
+                  <Grid item container gap={2} flexWrap="nowrap">
+                    <Grid item xs={6}>
+                      <FormikControl
+                        name="firstname"
+                        autoComplete="off"
+                        placeholder="First name"
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <FormikControl
+                        name="lastname"
+                        autoComplete="off"
+                        placeholder="Last name"
+                      />
+                    </Grid>
+                  </Grid>
+                  <Grid item container>
                     <FormikControl
-                      name="firstname"
+                      name="vendor_name"
                       autoComplete="off"
-                      placeholder="First name"
+                      placeholder="Vendor Name"
                     />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item container>
                     <FormikControl
-                      name="lastname"
+                      name="email"
                       autoComplete="off"
-                      placeholder="Last name"
+                      placeholder="Email"
+                      disabled
                     />
                   </Grid>
-                </Grid>
-                <Grid item container>
-                  <FormikControl
-                    name="vendor_name"
-                    autoComplete="off"
-                    placeholder="Vendor Name"
-                  />
-                </Grid>
-                <Grid item container>
-                  <FormikControl
-                    name="email"
-                    autoComplete="off"
-                    placeholder="Email"
-                    disabled
-                  />
-                </Grid>
-                <Grid item container>
-                  <FormikControl
-                    name="phone"
-                    autoComplete="off"
-                    placeholder="Phone"
-                  />
-                </Grid>
-                <Grid item container>
-                  <FormikControl name="file" control="file" />
-                </Grid>
-                {errors.file && (
-                  <Typography color="error" variant="error">
-                    {errors.file}
-                  </Typography>
-                )}
-                <PhotoProvider>
-                  <Grid
-                    item
-                    container
-                    display="grid"
-                    gap={1}
-                    gridTemplateColumns={{
-                      xs: "repeat(auto-fill, minmax(5rem, 1fr))",
-                    }}
-                  >
-                    {values?.file?.preview?.map((item, idx) => (
-                      <Grid
-                        key={idx}
-                        item
-                        sx={{
-                          // p: 0.5,
-                          position: "relative",
-                          width: "100%",
-                        }}
-                      >
-                        <PhotoView key={idx} src={item}>
-                          <Avatar
-                            variant="square"
-                            src={item}
-                            sx={{
-                              cursor: "pointer",
-                              "& .MuiAvatar-img": {
-                                objectFit: "cover !important",
+                  <Grid item container>
+                    <FormikControl
+                      name="phone"
+                      autoComplete="off"
+                      placeholder="Phone"
+                    />
+                  </Grid>
+                  <Grid item container>
+                    <FormikControl name="file" control="file" />
+                  </Grid>
+                  {errors.file && (
+                    <Typography color="error" variant="error">
+                      {errors.file}
+                    </Typography>
+                  )}
+                  <PhotoProvider>
+                    <Grid
+                      item
+                      container
+                      display="grid"
+                      gap={1}
+                      gridTemplateColumns={{
+                        xs: "repeat(auto-fill, minmax(5rem, 1fr))",
+                      }}
+                    >
+                      {values?.file?.preview?.map((item, idx) => (
+                        <Grid
+                          key={idx}
+                          item
+                          sx={{
+                            // p: 0.5,
+                            position: "relative",
+                            width: "100%",
+                          }}
+                        >
+                          <PhotoView key={idx} src={item}>
+                            <Avatar
+                              variant="square"
+                              src={item}
+                              sx={{
+                                cursor: "pointer",
+                                "& .MuiAvatar-img": {
+                                  objectFit: "cover !important",
+                                  width: "100%",
+                                },
                                 width: "100%",
-                              },
-                              width: "100%",
-                              maxHeight: "100%",
-                              transition: "border 1ms linear",
-                            }}
-                          />
-                        </PhotoView>
-                      </Grid>
-                    ))}
-                  </Grid>
-                </PhotoProvider>
+                                maxHeight: "100%",
+                                transition: "border 1ms linear",
+                              }}
+                            />
+                          </PhotoView>
+                        </Grid>
+                      ))}
+                    </Grid>
+                  </PhotoProvider>
 
-                <Grid item xs={12} sm={4} sx={{ mx: "auto" }}>
-                  <CustomButton
-                    title="Update Profile"
-                    type="submit"
-                    isSubmitting={isSubmitting}
-                  />
+                  <Grid item xs={12} sm={4} sx={{ mx: "auto" }}>
+                    <CustomButton
+                      title="Update Profile"
+                      type="submit"
+                      isSubmitting={isSubmitting}
+                    />
+                  </Grid>
                 </Grid>
-              </Grid>
-            </Form>
-          )}
-        </Formik>
+              </Form>
+            )}
+          </Formik>
+        </Grid>
+      </Grid>
+
+      <Grid item container mt={4}>
+        <Grid item sx={{ mx: "auto" }} md={8} xs={12}>
+          <Formik
+            enableReinitialize
+            onSubmit={onSubmit}
+            validationSchema={validationSchema}
+            initialValues={{
+              password: "",
+              cpassword: "",
+            }}
+          >
+            {({ values, errors, isSubmitting }) => (
+              <Form noValidate>
+                <Typography sx={{ mb: 2 }} variant="h1">
+                  Update Password
+                </Typography>
+
+                <Grid item container gap={2}>
+                  {/* <Grid item container gap={2} flexWrap="nowrap"> */}
+                  <Grid item container>
+                    <FormikControl
+                      name="password"
+                      type="password"
+                      autoComplete="off"
+                      placeholder="New Password"
+                    />
+                  </Grid>
+                  <Grid item container>
+                    <FormikControl
+                      name="cpassword"
+                      type="password"
+                      placeholder="Confirm Password"
+                    />
+                    {/* </Grid> */}
+                  </Grid>
+
+                  <Grid item xs={12} sm={4} sx={{ mx: "auto" }}>
+                    <CustomButton
+                      title="Update Password"
+                      type="submit"
+                      isSubmitting={isSubmitting}
+                    />
+                  </Grid>
+                </Grid>
+              </Form>
+            )}
+          </Formik>
+        </Grid>
       </Grid>
     </Grid>
   );

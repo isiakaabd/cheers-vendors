@@ -42,9 +42,8 @@ const Inventory = () => {
     }
     if (error) toast.error(error);
   };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  const handleClose = () => setAnchorEl(null);
+
   const { data, isLoading } = useGetInventoryQuery(id);
   const [edit, setEdit] = useState(false);
   if (isLoading) return <Skeletons />;
@@ -55,7 +54,7 @@ const Inventory = () => {
     title,
     description,
     price,
-    category: category.id,
+    category: category.title,
   };
   return (
     <>

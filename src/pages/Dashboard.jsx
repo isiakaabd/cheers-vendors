@@ -34,12 +34,25 @@ const Dashboard = () => {
   ];
 
   return (
-    <Grid item container justifyContent="space-between" gap={2} sx={{ py: 2 }}>
+    <Grid
+      item
+      container
+      justifyContent="space-between"
+      alignItems={"center"}
+      gap={4}
+      sx={{
+        height: "100%",
+        display: "grid",
+        py: 3,
+        gridTemplateColumns: { md: "repeat(3,1fr)", xs: "1fr", sm: "1fr 1fr" },
+        // gridTemplateRows: "repeat(3,1fr)",
+      }}
+    >
       {arr?.map((item, index) => (
         <Grid
           item
-          md={3.5}
-          sm={3.5}
+          // md={3}
+          // sm={3.5}
           xs={12}
           key={index}
           sx={{ boxShadow: 0, height: "max-content" }}

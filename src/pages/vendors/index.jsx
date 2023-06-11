@@ -1,4 +1,8 @@
-import { DeleteOutline, MoreHorizOutlined } from "@mui/icons-material";
+import {
+  DeleteOutline,
+  EditOutlined,
+  MoreHorizOutlined,
+} from "@mui/icons-material";
 import {
   Grid,
   Card,
@@ -9,6 +13,7 @@ import {
   MenuItem,
   ListItemIcon,
   ListItemText,
+  Checkbox,
 } from "@mui/material";
 import CustomButton from "components/CustomButton";
 import Dialogs from "components/Dialog";
@@ -24,29 +29,57 @@ import BasicMenu from "components/MenuComponent";
 import { toast } from "react-toastify";
 import CreateInventory from "pages/vendors/component";
 import { useNavigate } from "react-router-dom";
+import { Form, Formik } from "formik/dist";
+import FormikControl from "validation/FormikControl";
 
 const Inventories = () => {
   const { data: inventories, isLoading: loading } = useGetInventoriesQuery();
+  const [selected, setSelected] = useState([]);
 
   const [open, setOpen] = useState(false);
   if (loading) return <Skeletons />;
   const headcells = [
     "Name",
+    "SKU",
+    "Status",
     "Created At",
     "Price",
-    "Description",
+    "Available",
     "Category",
     "",
   ];
   return (
     <>
       <Grid item container flexDirection="column">
-        <Grid item sx={{ ml: "auto", mb: 3 }}>
-          <CustomButton
-            title="Add Inventory"
-            type="button"
-            onClick={() => setOpen(true)}
-          />
+        <Grid
+          item
+          container
+          alignItems="center"
+          gap={{ md: 8, xs: 2 }}
+          sx={{ my: 3 }}
+          flexWrap={"nowrap"}
+        >
+          <Grid item flex={1}>
+            <Formik
+              initialValues={{ email: "" }}
+              // onSubmit={onSubmit}
+              // validationSchema={validationSchema}
+            >
+              <Form noValidate style={{ width: "100%" }}>
+                <Grid item container>
+                  <FormikControl name="email" placeholder="Search Inventory" />
+                </Grid>
+              </Form>
+            </Formik>
+          </Grid>
+
+          <Grid item>
+            <CustomButton
+              title="Add Inventory"
+              type="button"
+              onClick={() => setOpen(true)}
+            />
+          </Grid>
         </Grid>
         <Card sx={{ width: "100%" }}>
           {inventories?.data?.length > 0 ? (
@@ -61,14 +94,22 @@ const Inventories = () => {
               <BasicTable
                 tableHead={headcells}
                 rows={inventories}
+                setSelected={setSelected}
+                selected={selected}
                 paginationLabel="inventories per page"
-                hasCheckbox={false}
+                hasCheckbox={true}
                 per_page={inventories?.per_page}
                 totalPage={inventories?.to}
                 nextPageUrl={inventories?.next_page_url}
               >
                 {inventories?.data?.map((row) => (
-                  <Rows key={row.id} row={row} />
+                  <Rows
+                    key={row.id}
+                    row={row}
+                    hasCheckbox={true}
+                    selected={selected}
+                    setSelected={setSelected}
+                  />
                 ))}
               </BasicTable>
             </Grid>
@@ -93,7 +134,7 @@ const Inventories = () => {
   );
 };
 
-function Rows({ row }) {
+function Rows({ row, hasCheckbox, setSelected, selected }) {
   const { id, description, category, price, title, created_at } = row;
   const navigate = useNavigate();
   const [deleteInventory, { isLoading: deleting, status }] =
@@ -120,13 +161,67 @@ function Rows({ row }) {
     if (error) toast.error(error);
   };
 
+  const handleClicks = (event, row) => {
+    // console.log(title);
+    const selectedIndex = selected.indexOf(row);
+    selected.indexOf(row);
+    let newSelected = [];
+
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selected, row);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selected.slice(1));
+    } else if (selectedIndex === selected.length - 1) {
+      newSelected = newSelected.concat(selected.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(
+        selected.slice(0, selectedIndex),
+        selected.slice(selectedIndex + 1)
+      );
+    }
+
+    setSelected(newSelected);
+  };
+  const isSelected = (id) => selected.indexOf(id) !== -1;
+  const isItemSelected = isSelected(id);
+  const [edit, setEdit] = useState(false);
+  const initials = {
+    id,
+    title,
+    description,
+    price,
+    category: category.title,
+  };
   return (
     <>
       <TableRow
-        tabIndex={-1}
         sx={{ cursor: "pointer" }}
-        onClick={() => navigate(`${id}`)}
+        hover
+        onClick={() => navigate(`/inventories/${id}`)}
       >
+        {hasCheckbox && (
+          <TableCell padding="checkbox">
+            <Checkbox
+              size="large"
+              color="primary"
+              onClick={(event) => {
+                event.stopPropagation();
+                handleClicks(event, id);
+              }}
+              checked={isItemSelected}
+              // inputProps={{
+              //   "aria-labelledby": labelId,
+              // }}
+            />
+          </TableCell>
+        )}
+
+        <TableCell scope="row" align="left">
+          {title}
+        </TableCell>
+        <TableCell scope="row" align="left">
+          {title}
+        </TableCell>
         <TableCell scope="row" align="left">
           {title}
         </TableCell>
@@ -159,9 +254,36 @@ function Rows({ row }) {
 
               <ListItemText>{!deleting ? "Delete" : "Deleting"}</ListItemText>
             </MenuItem>
+            <MenuItem
+              onClick={(e) => {
+                setEdit(true);
+                handleClose(e);
+              }}
+            >
+              <ListItemIcon>
+                <EditOutlined fontSize="large" />
+              </ListItemIcon>
+
+              <ListItemText>Edit </ListItemText>
+            </MenuItem>
           </BasicMenu>
         </TableCell>
       </TableRow>
+      <Dialogs
+        isOpen={edit}
+        handleClose={(e) => {
+          setEdit(false);
+          handleClose(e);
+        }}
+      >
+        <CreateInventory
+          // open={open}
+          setOpen={setEdit}
+          values={initials}
+          type="edit"
+          heading={"Edit Inventory"}
+        />
+      </Dialogs>
     </>
   );
 }

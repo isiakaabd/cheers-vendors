@@ -9,6 +9,10 @@ import {
   TableFooter,
   TablePagination,
   Box,
+  Checkbox,
+  Toolbar,
+  Typography,
+  Tooltip,
 } from "@mui/material";
 import PropTypes from "prop-types";
 import { useTheme } from "@mui/material/styles";
@@ -18,6 +22,8 @@ import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import LastPageIcon from "@mui/icons-material/LastPage";
 import { useState } from "react";
+import { alpha } from "@mui/material/styles";
+import { DeleteOutline } from "@mui/icons-material";
 
 function TablePaginationActions(props) {
   const theme = useTheme();
@@ -85,6 +91,9 @@ export default function BasicTable({
   tableHead,
   paginationLabel,
   children,
+  selected,
+  setSelected,
+  hasCheckbox,
   per_page,
   totalPage,
   nextPageUrl,
@@ -105,45 +114,112 @@ export default function BasicTable({
     setRowsPerPage(parseInt(event.target.value, per_page));
     setPage(0);
   };
-  return (
-    <TableContainer component={Paper} sx={{ width: "100%" }}>
-      <Table sx={{ width: "100%" }} aria-label="table">
-        <TableHead>
-          <TableRow>
-            {tableHead.map((head, index) => (
-              <TableCell key={index} align="left">
-                {head}
-              </TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>{children}</TableBody>
+  const handleSelectAllClick = (event) => {
+    if (event.target.checked) {
+      const newSelected = rows?.data?.map((n) => n.id);
+      setSelected(newSelected);
+      return;
+    }
+    setSelected([]);
+  };
 
-        <TableFooter>
-          <TableRow>
-            <TablePagination
-              rowsPerPageOptions={[15, 30, 45, { label: "All", value: -1 }]}
-              colSpan={3}
-              count={totalPage}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              SelectProps={{
-                inputProps: {
-                  "aria-label": paginationLabel,
-                },
-                // native: true,
-              }}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-              ActionsComponent={TablePaginationActions}
-            />
-          </TableRow>
-        </TableFooter>
-      </Table>
-    </TableContainer>
+  return (
+    <>
+      <EnhancedTableToolbar numSelected={selected?.length} />
+      <TableContainer component={Paper} sx={{ width: "100%" }}>
+        <Table sx={{ width: "100%" }} aria-label="table">
+          <TableHead>
+            <TableRow component={"a"} to="/ddd">
+              {hasCheckbox && (
+                <TableCell padding="checkbox">
+                  <Checkbox
+                    color="primary"
+                    size="large"
+                    onClick={handleSelectAllClick}
+                  />
+                </TableCell>
+              )}
+              {tableHead.map((head, index) => (
+                <TableCell key={index} align="left">
+                  {head}
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>{children}</TableBody>
+
+          <TableFooter>
+            <TableRow>
+              <TablePagination
+                rowsPerPageOptions={[15, 30, 45, { label: "All", value: -1 }]}
+                colSpan={3}
+                count={totalPage}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                SelectProps={{
+                  inputProps: {
+                    "aria-label": paginationLabel,
+                  },
+                  // native: true,
+                }}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                ActionsComponent={TablePaginationActions}
+              />
+            </TableRow>
+          </TableFooter>
+        </Table>
+      </TableContainer>
+    </>
   );
 }
 
 Table.propTypes = {
   rows: PropTypes.array.isRequired,
+};
+
+const EnhancedTableToolbar = (props) => {
+  const { numSelected } = props;
+
+  return (
+    <Toolbar
+      sx={{
+        pl: { sm: 2 },
+        pr: { xs: 1, sm: 1 },
+        ...(numSelected > 0 && {
+          bgcolor: (theme) =>
+            alpha(
+              theme.palette.primary.main,
+              theme.palette.action.activatedOpacity
+            ),
+        }),
+      }}
+    >
+      {numSelected > 0 ? (
+        <Typography sx={{ flex: "1 1 100%" }} color="inherit" variant="h4">
+          {`${numSelected} ${
+            numSelected > 1 ? "Inventories" : "Inventory"
+          } selected`}
+        </Typography>
+      ) : (
+        <Typography sx={{ flex: "1 1 100%" }} variant="h4" id="tableTitle">
+          {numSelected > 1 ? "Inventories" : "Inventory"}
+        </Typography>
+      )}
+
+      {numSelected > 0 && (
+        <Tooltip
+          title={`Delete ${numSelected > 1 ? "Inventories" : "Inventory"}`}
+        >
+          <IconButton size="large">
+            <DeleteOutline sx={{ fontSize: "3rem" }} />
+          </IconButton>
+        </Tooltip>
+      )}
+    </Toolbar>
+  );
+};
+
+EnhancedTableToolbar.propTypes = {
+  numSelected: PropTypes.number.isRequired,
 };
