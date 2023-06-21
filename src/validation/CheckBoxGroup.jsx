@@ -8,7 +8,7 @@ import {
   FormControlLabel,
   Grid,
 } from "@mui/material";
-import { Field } from "formik/dist";
+import { FieldArray } from "formik/dist";
 import PropTypes from "prop-types";
 import { useState } from "react";
 
@@ -118,7 +118,7 @@ const CheckBox = (props) => {
   return (
     <>
       <Grid container direction="column">
-        <Field
+        <FieldArray
           id={name}
           type="checkbox"
           label={label ? label : null}

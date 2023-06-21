@@ -73,6 +73,8 @@ const CreateInventory = ({ heading, values, setOpen, type }) => {
     price: "",
     description: "",
     file: null,
+    propertiesArray: [],
+    properties: "",
   };
 
   const handleSubmit = async (values) => {
@@ -132,6 +134,7 @@ const CreateInventory = ({ heading, values, setOpen, type }) => {
           onSubmit={type === "edit" ? handleSubmit : handleCreateInventory}
         >
           {({ isSubmitting, values, errors, setFieldValue }) => {
+            console.log(values);
             return (
               <Form style={{ width: "100%" }}>
                 <Grid item container gap={2}>
@@ -149,6 +152,64 @@ const CreateInventory = ({ heading, values, setOpen, type }) => {
                   </Grid>
                   <Grid item container>
                     <FormikControl name="price" placeholder="Price" />
+                  </Grid>
+                  <Grid item container flexDirection={"column"}>
+                    <Grid item container flexWrap="nowrap" gap={2}>
+                      <Grid item flex={1}>
+                        <FormikControl
+                          name="properties"
+                          placeholder="Add a property"
+                        />
+                      </Grid>
+                      <Grid item>
+                        <CustomButton
+                          type="button"
+                          disabled={!values.properties}
+                          onClick={() => {
+                            setFieldValue("propertiesArray", [
+                              ...values.propertiesArray,
+                              {
+                                name: values.properties,
+                                variant: "",
+                              },
+                            ]);
+                            setTimeout(
+                              () => setFieldValue("properties", ""),
+                              10
+                            );
+                          }}
+                          title={"Add Properties"}
+                        />
+                      </Grid>
+                    </Grid>
+                    {values.propertiesArray.length > 0 &&
+                      values.propertiesArray.map((property, index) => {
+                        return (
+                          <Grid item container flexWrap="nowrap" gap={2} mt={1}>
+                            <Grid item flex={1}>
+                              <FormikControl
+                                // value=
+                                name={`propertiesArray[${index}].variant`}
+                                label={property.name}
+                                placeholder={`${property.name}- use Comma(,) for more than one property e.g red,green,blue`}
+                              />
+                            </Grid>
+                            <Grid item>
+                              <CustomButton
+                                color={"secondary"}
+                                type="button"
+                                onClick={() => {
+                                  const arr = values.propertiesArray.filter(
+                                    (item) => item.name !== property.name
+                                  );
+                                  setFieldValue("propertiesArray", arr);
+                                }}
+                                title={"Delete "}
+                              />
+                            </Grid>
+                          </Grid>
+                        );
+                      })}
                   </Grid>
                   <Grid item container>
                     <FormikControl
