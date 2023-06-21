@@ -34,55 +34,101 @@ const Dashboard = () => {
   ];
 
   return (
-    <Grid
-      item
-      container
-      justifyContent="space-between"
-      alignItems={"center"}
-      gap={4}
-      sx={{
-        height: "100%",
-        display: "grid",
-        py: 3,
-        gridTemplateColumns: { md: "repeat(3,1fr)", xs: "1fr", sm: "1fr 1fr" },
-        // gridTemplateRows: "repeat(3,1fr)",
-      }}
-    >
-      {arr?.map((item, index) => (
-        <Grid
-          item
-          // md={3}
-          // sm={3.5}
-          xs={12}
-          key={index}
-          sx={{ boxShadow: 0, height: "max-content" }}
-        >
-          <Card
-            component={Link}
-            variant="outlined"
-            to={item.link}
-            sx={{
-              boxShadow: 2,
-              textDecoration: "none",
-              p: 2,
-              display: "flex",
-              alignItems: "center",
-              flexDirection: "column",
-              justifyContent: "center",
-              height: "15rem",
-              gap: { md: 3, sm: 1, xs: 3 },
-            }}
+    <>
+      <Grid
+        item
+        container
+        justifyContent="space-between"
+        alignItems={"center"}
+        gap={4}
+        sx={{
+          height: "100%",
+
+          py: 2,
+        }}
+      >
+        {arr?.slice(2).map((item, index) => (
+          <Grid
+            item
+            md={4}
+            sm={3}
+            xs={12}
+            key={index}
+            sx={{ boxShadow: 0, height: "max-content" }}
           >
-            <Typography variant="h4" color="primary" fontWeight={700}>
-              {item.name}
-            </Typography>
-            <Typography variant="h4" sx={{ color: "#e4e6ef" }}>
-              {item.value?.toLocaleString()}
-            </Typography>
-          </Card>
-        </Grid>
-      ))}
-    </Grid>
+            <Card
+              component={Link}
+              variant="outlined"
+              to={item.link}
+              sx={{
+                boxShadow: 2,
+                textDecoration: "none",
+                p: 2,
+                display: "flex",
+                alignItems: "center",
+                flexDirection: "column",
+                justifyContent: "center",
+                height: "15rem",
+                gap: { md: 3, sm: 1, xs: 3 },
+              }}
+            >
+              <Typography variant="h4" color="primary" fontWeight={700}>
+                {item.name}
+              </Typography>
+              <Typography variant="h4" sx={{ color: "#e4e6ef" }}>
+                {item.value?.toLocaleString()}
+              </Typography>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
+      <Grid
+        item
+        container
+        justifyContent="space-between"
+        alignItems={"center"}
+        gap={4}
+        sx={{
+          height: "100%",
+          py: 2,
+        }}
+      >
+        {arr?.slice(0, 2).map((item, index) => (
+          <Grid
+            item
+            md={4}
+            sm={3}
+            xs={12}
+            key={index}
+            sx={{ boxShadow: 0, height: "max-content" }}
+          >
+            <Card
+              component={Link}
+              variant="outlined"
+              to={item.link}
+              sx={{
+                boxShadow: 2,
+                textDecoration: "none",
+                p: 2,
+                display: "flex",
+                alignItems: "center",
+                flexDirection: "column",
+                justifyContent: "center",
+                height: "15rem",
+                gap: { md: 3, sm: 1, xs: 3 },
+              }}
+            >
+              <Typography variant="h4" color="primary" fontWeight={700}>
+                {item.name}
+              </Typography>
+              <Typography variant="h4" sx={{ color: "#e4e6ef" }}>
+                {item.value?.toLocaleString()}
+              </Typography>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
+    </>
   );
 };
 

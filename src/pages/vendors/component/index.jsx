@@ -40,6 +40,7 @@ const CreateInventory = ({ heading, values, setOpen, type }) => {
     formData.append("category_id", categoryId[0].id);
     formData.append("price", price);
     formData.append("description", description);
+    formData.append("active", 1);
 
     for (let i = 0; i < file.file.length; i++) {
       formData.append(`gallery[${i}]`, file.file[i]);

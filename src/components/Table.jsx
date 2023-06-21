@@ -12,7 +12,9 @@ import {
   Checkbox,
   Toolbar,
   Typography,
-  Tooltip,
+  MenuItem,
+  ListItemText,
+  ListItemIcon,
 } from "@mui/material";
 import PropTypes from "prop-types";
 import { useTheme } from "@mui/material/styles";
@@ -23,7 +25,13 @@ import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import LastPageIcon from "@mui/icons-material/LastPage";
 import { useState } from "react";
 import { alpha } from "@mui/material/styles";
-import { DeleteOutline } from "@mui/icons-material";
+import {
+  DeleteOutline,
+  MoreVertOutlined,
+  RestoreOutlined,
+  StartOutlined,
+} from "@mui/icons-material";
+import BasicMenu from "./MenuComponent";
 
 function TablePaginationActions(props) {
   const theme = useTheme();
@@ -129,7 +137,7 @@ export default function BasicTable({
       <TableContainer component={Paper} sx={{ width: "100%" }}>
         <Table sx={{ width: "100%" }} aria-label="table">
           <TableHead>
-            <TableRow component={"a"} to="/ddd">
+            <TableRow>
               {hasCheckbox && (
                 <TableCell padding="checkbox">
                   <Checkbox
@@ -180,7 +188,20 @@ Table.propTypes = {
 
 const EnhancedTableToolbar = (props) => {
   const { numSelected } = props;
-
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleDelete = async () => {
+    // const { error } = await deleteInventory(id);
+    // if (status === "fulfilled") {
+    //   toast.success("Inventory deleted successfully");
+    setTimeout(() => handleClose(), 1000);
+    // }
+    // if (error) toast.error(error);
+  };
+  const handleClose = () => setAnchorEl(null);
   return (
     <Toolbar
       sx={{
@@ -208,13 +229,59 @@ const EnhancedTableToolbar = (props) => {
       )}
 
       {numSelected > 0 && (
-        <Tooltip
-          title={`Delete ${numSelected > 1 ? "Inventories" : "Inventory"}`}
-        >
-          <IconButton size="large">
-            <DeleteOutline sx={{ fontSize: "3rem" }} />
+        // <Tooltip
+        //   title={`Delete ${numSelected > 1 ? "Inventories" : "Inventory"}`}
+        // >
+        <>
+          <IconButton
+            id="basic-button"
+            aria-controls={open ? "basic-menu" : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? "true" : undefined}
+            onClick={handleClick}
+          >
+            <MoreVertOutlined sx={{ fontSize: "3rem" }} />
           </IconButton>
-        </Tooltip>
+          <BasicMenu
+            open={open}
+            anchorEl={anchorEl}
+            setAnchorEl={setAnchorEl}
+            handleClick={handleClick}
+            handleClose={handleClose}
+          >
+            <MenuItem onClick={handleDelete} sx={{ color: "red" }}>
+              <ListItemIcon>
+                <DeleteOutline fontSize="large" sx={{ color: "red" }} />
+              </ListItemIcon>
+
+              <ListItemText> Delete All</ListItemText>
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                handleClose();
+                // setEdit(true);
+              }}
+            >
+              <ListItemIcon>
+                <RestoreOutlined fontSize="large" />
+              </ListItemIcon>
+
+              <ListItemText primary="Stock to Zero" />
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                handleClose();
+                // setEdit(true);
+              }}
+            >
+              <ListItemIcon>
+                <StartOutlined fontSize="large" />
+              </ListItemIcon>
+
+              <ListItemText primary="Activate All" />
+            </MenuItem>
+          </BasicMenu>
+        </>
       )}
     </Toolbar>
   );
