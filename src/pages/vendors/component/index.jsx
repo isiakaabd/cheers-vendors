@@ -14,10 +14,15 @@ import { PhotoProvider, PhotoView } from "react-photo-view";
 import { CloseOutlined } from "@mui/icons-material";
 const validationSchema = Yup.object().shape({
   title: Yup.string().required("required"),
+  stock: Yup.string().required("required"),
+  category: Yup.string().required("required"),
   price: Yup.number("Enter Amount")
     .typeError("Enter Amount")
     .required("required"),
+  active: Yup.boolean(),
   description: Yup.string().required("required"),
+
+  propertiesArray: Yup.array().min(1, "At least one item is required"),
 });
 
 const CreateInventory = ({ heading, values, setOpen, type }) => {
@@ -27,20 +32,46 @@ const CreateInventory = ({ heading, values, setOpen, type }) => {
   const cats = categories?.map((category) => ({
     label: category.title,
     value: category.title,
+    properties: category.properties,
   }));
 
-  // console.log(editCategory);
   const [active, setActive] = useState(0);
+
+  const [properties, setProperties] = useState(null);
+
   const handleCreateInventory = async (values) => {
-    const { title, category, price, description, file } = values;
+    const {
+      title,
+      category,
+      active,
+      stock,
+      propertiesArray,
+      price,
+      description,
+      file,
+    } = values;
     const categoryId = categories?.filter((cat) => category === cat.title);
     const formData = new FormData();
+    const x = propertiesArray.map((property) => {
+      let vary = [];
+
+      let prop = property.variant.split(",");
+
+      if (prop.length > 0) {
+        vary = [...prop];
+      } else {
+        vary = [...property];
+      }
+      return { name: property.name, variants: [...vary] };
+    });
 
     formData.append("title", title);
     formData.append("category_id", categoryId[0].id);
     formData.append("price", price);
+    formData.append("active", active ? 1 : 0);
+    formData.append("stock", stock);
+    formData.append("properties[]", JSON.stringify(x));
     formData.append("description", description);
-    formData.append("active", 1);
 
     for (let i = 0; i < file.file.length; i++) {
       formData.append(`gallery[${i}]`, file.file[i]);
@@ -75,17 +106,42 @@ const CreateInventory = ({ heading, values, setOpen, type }) => {
     file: null,
     propertiesArray: [],
     properties: "",
+    stock: "",
+    active: true,
   };
 
   const handleSubmit = async (values) => {
-    const { title, category, price, description, file } = values;
+    const {
+      title,
+      category,
+      stock,
+      active,
+      propertiesArray,
+      price,
+      description,
+      file,
+    } = values;
     const categoryId = categories?.filter((cat) => category === cat.title);
+    const x = propertiesArray.map((property) => {
+      let vary = [];
 
+      let prop = property.variant.split(",");
+
+      if (prop.length > 0) {
+        vary = [...prop];
+      } else {
+        vary = [...property];
+      }
+      return { name: property.name, variants: [...vary] };
+    });
     const formData = new FormData();
     formData.append("_method", "put");
     formData.append("title", title);
+    formData.append("properties[]", JSON.stringify(x));
     formData.append("category_id", categoryId[0]?.id);
     formData.append("price", price);
+    formData.append("active", active ? 1 : 0);
+    formData.append("stock", stock);
     formData.append("description", description);
     if (file?.length > 0) {
       for (let i = 0; i < file.length; i++) {
@@ -114,7 +170,13 @@ const CreateInventory = ({ heading, values, setOpen, type }) => {
       if (price?.length > 0) toast.error(price[0]);
     }
   };
-  // if (isLoading) return <Skeleton />;
+  const changeCategory = (e, setFieldValue) => {
+    setFieldValue("category", e.target.value);
+    let y = cats?.filter((item) => item.label === e.target.value);
+
+    setProperties(y[0]?.properties && JSON.parse(...y[0].properties));
+  };
+
   return (
     <Grid item container gap={2} sx={{ pt: 0, height: "100%" }}>
       <Typography
@@ -134,24 +196,46 @@ const CreateInventory = ({ heading, values, setOpen, type }) => {
           onSubmit={type === "edit" ? handleSubmit : handleCreateInventory}
         >
           {({ isSubmitting, values, errors, setFieldValue }) => {
-            console.log(values);
             return (
               <Form style={{ width: "100%" }}>
                 <Grid item container gap={2}>
                   <Grid item container>
                     <FormikControl name="title" placeholder="Title" />
                   </Grid>
-                  <Grid item container>
-                    <FormikControl
-                      name="category"
-                      placeholder="Category"
-                      control="select"
-                      selected={type === "category" && values.category}
-                      options={isLoading ? [] : [...cats]}
-                    />
+                  <Grid item container flexWrap="nowrap" gap={2}>
+                    <Grid item xs={6}>
+                      <FormikControl name="stock" placeholder="Stock Count" />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <FormikControl name="price" placeholder="Price" />
+                    </Grid>
                   </Grid>
-                  <Grid item container>
-                    <FormikControl name="price" placeholder="Price" />
+                  <Grid
+                    item
+                    container
+                    flexWrap="nowrap"
+                    gap={2}
+                    alignItems="center"
+                  >
+                    <Grid item flex={1}>
+                      <FormikControl
+                        name="category"
+                        placeholder="Category"
+                        control="select"
+                        onChange={(e) => changeCategory(e, setFieldValue)}
+                        selected={type === "category" && values.category}
+                        options={isLoading ? [] : [...cats]}
+                      />
+                    </Grid>
+                    <Grid item>
+                      <Grid item container justifyContent={"flex-end"}>
+                        <FormikControl
+                          name="active"
+                          control={"checkbox"}
+                          label="Active"
+                        />
+                      </Grid>
+                    </Grid>
                   </Grid>
                   <Grid item container flexDirection={"column"}>
                     <Grid item container flexWrap="nowrap" gap={2}>
@@ -161,6 +245,7 @@ const CreateInventory = ({ heading, values, setOpen, type }) => {
                           placeholder="Add a property"
                         />
                       </Grid>
+                      {/* {cats.properties && JS} */}
                       <Grid item>
                         <CustomButton
                           type="button"
@@ -182,8 +267,8 @@ const CreateInventory = ({ heading, values, setOpen, type }) => {
                         />
                       </Grid>
                     </Grid>
-                    {values.propertiesArray.length > 0 &&
-                      values.propertiesArray.map((property, index) => {
+                    {values?.propertiesArray?.length > 0 &&
+                      values?.propertiesArray?.map((property, index) => {
                         return (
                           <Grid item container flexWrap="nowrap" gap={2} mt={1}>
                             <Grid item flex={1}>
@@ -210,6 +295,22 @@ const CreateInventory = ({ heading, values, setOpen, type }) => {
                           </Grid>
                         );
                       })}
+                    {properties && (
+                      <Grid item>
+                        {/* <FormikControl
+                          // value=
+                          name={`propertiesArray[${index}].variant`}
+                          label={property.name}
+                          placeholder={`${property.name}- use Comma(,) for more than one property e.g red,green,blue`}
+                        /> */}
+                      </Grid>
+                    )}
+
+                    {errors.propertiesArray && (
+                      <Typography color="error" variant="error">
+                        {errors.propertiesArray}
+                      </Typography>
+                    )}
                   </Grid>
                   <Grid item container>
                     <FormikControl
@@ -308,14 +409,14 @@ const CreateInventory = ({ heading, values, setOpen, type }) => {
                       ))}
                     </Grid>
                   </PhotoProvider>
-                  <Grid item container sx={{ mt: 3 }}>
-                    <CustomButton
-                      title="Submit"
-                      width="100%"
-                      type="submit"
-                      isSubmitting={isSubmitting}
-                    />
-                  </Grid>
+                </Grid>
+                <Grid item container sx={{ mt: 3 }}>
+                  <CustomButton
+                    title="Submit"
+                    width="100%"
+                    type="submit"
+                    isSubmitting={isSubmitting}
+                  />
                 </Grid>
               </Form>
             );

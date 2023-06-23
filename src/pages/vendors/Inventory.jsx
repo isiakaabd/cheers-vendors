@@ -47,12 +47,15 @@ const Inventory = () => {
   const { data, isLoading } = useGetInventoryQuery(id);
   const [edit, setEdit] = useState(false);
   if (isLoading) return <Skeletons />;
-  const { media, title, category, description, reviews, price } = data;
-
+  const { media, title, stock, active, category, description, reviews, price } =
+    data;
+  console.log(data);
   const initials = {
     id,
     title,
     description,
+    stock,
+    active,
     price,
     category: category.title,
   };

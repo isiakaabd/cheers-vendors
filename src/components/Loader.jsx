@@ -5,10 +5,9 @@ const Loader = ({ color, size, ...rest }) => {
     <Grid container justifyContent="center" alignItems="center">
       <CircularProgress
         size={size ? size : 25}
-        // color={color ? color : "primary"}
         thickness={5}
         {...rest}
-        sx={{ color: "#fff" }}
+        sx={{ color: color ? color : "#fff" }}
       />
     </Grid>
   );

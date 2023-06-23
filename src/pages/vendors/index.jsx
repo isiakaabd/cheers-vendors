@@ -14,6 +14,7 @@ import {
   ListItemIcon,
   ListItemText,
   Checkbox,
+  Chip,
 } from "@mui/material";
 import CustomButton from "components/CustomButton";
 import Dialogs from "components/Dialog";
@@ -44,7 +45,7 @@ const Inventories = () => {
     "Status",
     "Created At",
     "Price",
-    "Available",
+    "Stock",
     "Category",
     "",
   ];
@@ -135,7 +136,20 @@ const Inventories = () => {
 };
 
 function Rows({ row, hasCheckbox, setSelected, selected }) {
-  const { id, description, category, price, title, created_at } = row;
+  const {
+    id,
+    description,
+    sku,
+    active,
+    stock,
+    category,
+    price,
+    properties,
+    title,
+    created_at,
+  } = row;
+
+  console.log(row, "row");
   const navigate = useNavigate();
   const [deleteInventory, { isLoading: deleting, status }] =
     useDeleteInventoryMutation();
@@ -190,6 +204,9 @@ function Rows({ row, hasCheckbox, setSelected, selected }) {
     title,
     description,
     price,
+    stock,
+    active,
+    propertiesArray: properties,
     category: category.title,
   };
   return (
@@ -220,14 +237,18 @@ function Rows({ row, hasCheckbox, setSelected, selected }) {
           {title}
         </TableCell>
         <TableCell scope="row" align="left">
-          {title}
+          {sku ? sku : "No SKU"}
         </TableCell>
         <TableCell scope="row" align="left">
-          {title}
+          <Chip
+            label={active === 1 ? "Active" : "Inactive"}
+            color={active === 1 ? "primary" : "error"}
+            sx={{ fontSize: "1.2rem" }}
+          />
         </TableCell>
         <TableCell align="left">{getTimeMoment(created_at)}</TableCell>
         <TableCell align="left">{price}</TableCell>
-        <TableCell align="left">{description}</TableCell>
+        <TableCell align="left">{stock}</TableCell>
         <TableCell align="left">{category?.title}</TableCell>
         <TableCell align="left">
           <IconButton

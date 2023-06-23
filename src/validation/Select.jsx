@@ -25,7 +25,7 @@ export const Formiks = ({
       sx={{
         borderRadius: borderRadius ? borderRadius : "1rem",
         color: "#828484",
-        height: "4rem",
+        height: "4.5rem",
 
         "&:active,&:focus": {
           borderColor: "currentColor",
@@ -68,7 +68,7 @@ const Selects = (props) => {
   } = props;
 
   return (
-    <Grid container direction="column">
+    <Grid item container flexDirection="column">
       <Field
         id={name}
         type="select"

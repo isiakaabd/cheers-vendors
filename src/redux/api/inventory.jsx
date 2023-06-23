@@ -29,6 +29,15 @@ export const inventorySlice = api.injectEndpoints({
       invalidatesTags: ["inventory"],
       transformErrorResponse: (error) => error.message,
     }),
+    multipleAction: builder.mutation({
+      query: (body) => ({
+        url: `/inventories/inventory-multiple-actions`,
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["inventory"],
+      transformErrorResponse: (error) => error.message,
+    }),
     createInventory: builder.mutation({
       query: (body) => ({
         url: `inventories`,
@@ -50,6 +59,7 @@ export const inventorySlice = api.injectEndpoints({
 export const {
   useCreateInventoryMutation,
   useGetInventoriesQuery,
+  useMultipleActionMutation,
   useDeleteInventoryMutation,
   useGetInventoryQuery,
   useUpdateInventoryMutation,

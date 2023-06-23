@@ -13,6 +13,7 @@ const Switchs = ({ label, name, value, ...rest }) => {
           {...rest}
         />
       }
+      label={label}
     />
   );
 };

@@ -10,6 +10,7 @@ const Text = ({ placeholder, endAdornment, ...rest }) => {
       size="small"
       label={placeholder}
       variant="filled"
+      sx={{ height: "4.5rem" }}
       InputProps={{ endAdornment }}
     />
   );

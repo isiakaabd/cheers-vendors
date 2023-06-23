@@ -27,11 +27,15 @@ import { useState } from "react";
 import { alpha } from "@mui/material/styles";
 import {
   DeleteOutline,
+  DeleteOutlineSharp,
   MoreVertOutlined,
   RestoreOutlined,
   StartOutlined,
 } from "@mui/icons-material";
 import BasicMenu from "./MenuComponent";
+import { useMultipleActionMutation } from "redux/api/inventory";
+import Loader from "./Loader";
+import { toast } from "react-toastify";
 
 function TablePaginationActions(props) {
   const theme = useTheme();
@@ -133,7 +137,10 @@ export default function BasicTable({
 
   return (
     <>
-      <EnhancedTableToolbar numSelected={selected?.length} />
+      <EnhancedTableToolbar
+        numSelected={selected?.length}
+        selected={selected}
+      />
       <TableContainer component={Paper} sx={{ width: "100%" }}>
         <Table sx={{ width: "100%" }} aria-label="table">
           <TableHead>
@@ -187,19 +194,25 @@ Table.propTypes = {
 };
 
 const EnhancedTableToolbar = (props) => {
-  const { numSelected } = props;
+  const { numSelected, selected } = props;
+  console.log(numSelected);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
-  const handleDelete = async () => {
-    // const { error } = await deleteInventory(id);
-    // if (status === "fulfilled") {
-    //   toast.success("Inventory deleted successfully");
-    setTimeout(() => handleClose(), 1000);
-    // }
-    // if (error) toast.error(error);
+  const [multipleAction, { isLoading }] = useMultipleActionMutation();
+  const handleDelete = async (action) => {
+    const { error, data } = await multipleAction({
+      action,
+      ids: selected,
+    });
+    console.log(data, error);
+    if (data) {
+      toast.success(data?.data || data?.message);
+      setTimeout(() => handleClose(), 1000);
+    }
+    if (error) toast.error(error);
   };
   const handleClose = () => setAnchorEl(null);
   return (
@@ -249,7 +262,12 @@ const EnhancedTableToolbar = (props) => {
             handleClick={handleClick}
             handleClose={handleClose}
           >
-            <MenuItem onClick={handleDelete} sx={{ color: "red" }}>
+            {isLoading && <Loader color="#a80a69" />}
+            <MenuItem
+              onClick={() => handleDelete("DELETE_INVENTORY")}
+              disabled={isLoading}
+              sx={{ color: "red" }}
+            >
               <ListItemIcon>
                 <DeleteOutline fontSize="large" sx={{ color: "red" }} />
               </ListItemIcon>
@@ -257,10 +275,8 @@ const EnhancedTableToolbar = (props) => {
               <ListItemText> Delete All</ListItemText>
             </MenuItem>
             <MenuItem
-              onClick={() => {
-                handleClose();
-                // setEdit(true);
-              }}
+              disabled={isLoading}
+              onClick={() => handleDelete("ZERO_STOCK")}
             >
               <ListItemIcon>
                 <RestoreOutlined fontSize="large" />
@@ -269,16 +285,24 @@ const EnhancedTableToolbar = (props) => {
               <ListItemText primary="Stock to Zero" />
             </MenuItem>
             <MenuItem
-              onClick={() => {
-                handleClose();
-                // setEdit(true);
-              }}
+              disabled={isLoading}
+              onClick={() => handleDelete("ACTIVATE_INVENTORY")}
             >
               <ListItemIcon>
                 <StartOutlined fontSize="large" />
               </ListItemIcon>
 
               <ListItemText primary="Activate All" />
+            </MenuItem>
+            <MenuItem
+              disabled={isLoading}
+              onClick={() => handleDelete("DEACTIVATE_INVENTORY")}
+            >
+              <ListItemIcon>
+                <DeleteOutlineSharp fontSize="large" />
+              </ListItemIcon>
+
+              <ListItemText primary="Deactivate All" />
             </MenuItem>
           </BasicMenu>
         </>
