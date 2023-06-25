@@ -149,7 +149,6 @@ function Rows({ row, hasCheckbox, setSelected, selected }) {
     created_at,
   } = row;
 
-  console.log(row, "row");
   const navigate = useNavigate();
   const [deleteInventory, { isLoading: deleting, status }] =
     useDeleteInventoryMutation();

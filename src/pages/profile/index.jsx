@@ -68,9 +68,8 @@ const Profile = () => {
 
       if (data) toast.success(data);
     } catch (err) {
-      console.log(err);
       let picsError = err?.errors?.profile_picture;
-      console.log(picsError);
+
       toast.error(picsError[0] || err.message || "Something went wrong..");
     }
   };

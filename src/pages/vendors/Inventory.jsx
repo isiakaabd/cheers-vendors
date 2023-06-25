@@ -49,7 +49,7 @@ const Inventory = () => {
   if (isLoading) return <Skeletons />;
   const { media, title, stock, active, category, description, reviews, price } =
     data;
-  console.log(data);
+
   const initials = {
     id,
     title,

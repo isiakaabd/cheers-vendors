@@ -25,7 +25,6 @@ const Dates = ({ name, value, setFieldValue, onBlur }) => {
         onChange={(value) => setFieldValue(name, value)}
         value={value}
         onBlur={onBlur}
-        onError={(err) => console.log(err)}
         renderInput={(params) => (
           <TextField {...params} sx={{ padding: "-12px" }} />
         )}

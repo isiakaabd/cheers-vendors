@@ -318,7 +318,7 @@ export default function MiniDrawer() {
   const { data: profile, isLoading, isError } = useGetVendorProfileQuery();
 
   const navigate = useNavigate();
-  console.log(profile);
+
   return (
     <Box sx={{ display: "flex", width: "100%", height: "100%" }}>
       <CssBaseline />

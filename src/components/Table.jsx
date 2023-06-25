@@ -195,7 +195,7 @@ Table.propTypes = {
 
 const EnhancedTableToolbar = (props) => {
   const { numSelected, selected } = props;
-  console.log(numSelected);
+
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -207,7 +207,7 @@ const EnhancedTableToolbar = (props) => {
       action,
       ids: selected,
     });
-    console.log(data, error);
+
     if (data) {
       toast.success(data?.data || data?.message);
       setTimeout(() => handleClose(), 1000);
