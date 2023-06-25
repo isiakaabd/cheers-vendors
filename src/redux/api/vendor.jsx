@@ -29,12 +29,12 @@ export const adminSlice = api.injectEndpoints({
     updateProfile: builder.mutation({
       query: (body) => ({
         url: `/update`,
-        method: "PUT",
+        method: "POST",
         body,
       }),
       transformResponse: (response) => response.message,
-      // transformErrorResponse: (response) => response,
-      providesTags: ["vendor"],
+
+      invalidatesTags: ["vendor"],
     }),
   }),
 });

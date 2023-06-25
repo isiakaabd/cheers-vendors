@@ -82,6 +82,7 @@ export const authSlice = api.injectEndpoints({
         url: "",
         method: "GET",
       }),
+      providesTags: ["vendor"],
       transformErrorResponse: (error) => error.data.message,
       transformResponse: (response) => response.data.vendor,
     }),

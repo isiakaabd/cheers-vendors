@@ -4,11 +4,13 @@ import { getUserDetails, logOut } from "redux/auth/auth.reducers";
 const baseQuery = fetchBaseQuery({
   baseUrl: "https://api.cheers.global/api/vendors",
 
-  // "https://api.cheers.global/api/vendors",
-
   prepareHeaders: (headers, { getState, endpoint, type }) => {
     const token = getState().auth.token;
-    if (endpoint === "createInventory" || endpoint === "updateInventory") {
+    if (
+      endpoint === "createInventory" ||
+      endpoint === "updateInventory" ||
+      endpoint === "updateProfile"
+    ) {
       headers.append("Accept", "application/json");
     } else {
       headers.append("Content-Type", "application/json");

@@ -45,6 +45,7 @@ const Profile = () => {
     formData.append("last_name", lastname);
     formData.append("email", email);
     formData.append("phone", phone);
+    formData.append("_method", "PUT");
     formData.append("vendor_name", vendor_name);
 
     if (file.file.length > 0) {

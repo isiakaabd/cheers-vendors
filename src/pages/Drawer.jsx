@@ -149,11 +149,9 @@ const Crumb = ({ breadcrumbs }) => {
   return (
     <Grid container alignItems="center" sx={{ position: "relative" }}>
       <Grid item>
-        {/* <Grid container alignItems="center" sx={{ cursor: "pointer" }}> */}
         <IconButton edge="start" onClick={() => navigate(previousIndex)}>
           <ArrowBackIosNewOutlined fontSize="large" color="secondary" />
         </IconButton>
-        {/* </Grid> */}
       </Grid>
       {breadcrumbs.length > 2 ? (
         <ClickAwayListener onClickAway={handleClickAway}>
@@ -320,7 +318,7 @@ export default function MiniDrawer() {
   const { data: profile, isLoading, isError } = useGetVendorProfileQuery();
 
   const navigate = useNavigate();
-
+  console.log(profile);
   return (
     <Box sx={{ display: "flex", width: "100%", height: "100%" }}>
       <CssBaseline />
@@ -350,10 +348,15 @@ export default function MiniDrawer() {
 
             <HeaderText />
           </Grid>
+          {/* profile pics */}
           <Grid item>
             <Grid item container alignItems="center" flexWrap="nowrap" gap={2}>
               <Avatar
-                src={profile?.profile_picture}
+                src={
+                  profile?.media?.length > 0
+                    ? profile?.media[0]?.original_url
+                    : profile?.profile_picture
+                }
                 color="primary"
                 sx={{
                   fontSize: "2rem",
