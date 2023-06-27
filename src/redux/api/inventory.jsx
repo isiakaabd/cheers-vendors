@@ -23,8 +23,8 @@ export const inventorySlice = api.injectEndpoints({
     //   // transformErrorResponse: (error) => error.message,
     // }),
     getOrders: builder.query({
-      query: () => ({
-        url: `/orders`,
+      query: ({ search }) => ({
+        url: `/orders${search && `/search?search=${search}`}`,
       }),
       providesTags: ["order"],
       transformResponse: (response) => response.data,
@@ -88,6 +88,7 @@ export const {
   useMultipleActionMutation,
   useDeleteInventoryImageMutation,
   useDeleteImageMutation,
+  useLazyGetOrdersQuery,
   useDeleteInventoryMutation,
   useGetInventoryQuery,
   useUpdateInventoryMutation,

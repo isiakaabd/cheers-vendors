@@ -72,11 +72,7 @@ const Inventories = () => {
           flexWrap={"nowrap"}
         >
           <Grid item flex={1}>
-            <Formik
-              initialValues={{ search: "" }}
-              onSubmit={onSubmit}
-              // validationSchema={validationSchema}
-            >
+            <Formik initialValues={{ search: "" }} onSubmit={onSubmit}>
               <Form noValidate style={{ width: "100%" }}>
                 <Grid item container gap={2}>
                   <Grid item flex={1}>

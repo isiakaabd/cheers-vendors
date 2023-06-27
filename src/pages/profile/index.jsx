@@ -83,13 +83,12 @@ const Profile = () => {
     // }
 
     try {
-      const { data } = await updateProfile(formData);
+      const { data, error } = await updateProfile(formData);
 
       if (data) toast.success(data);
+      if (error) toast.error(error?.data.message);
     } catch (err) {
-      let picsError = err?.errors?.profile_picture;
-
-      toast.error(picsError[0] || err.message || "Something went wrong..");
+      console(err?.data.message || "Something went wrong..");
     }
   };
   const onSubmitPassword = async (values, onSubmitProps) => {

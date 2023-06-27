@@ -1,14 +1,16 @@
 import { Grid, Card, TableCell, Skeleton, Chip } from "@mui/material";
+import CustomButton from "components/CustomButton";
 import EmptyCell from "components/EmptyTable";
 import BasicTable from "components/Table";
-import { useState } from "react";
-import { useGetOrdersQuery } from "redux/api/inventory";
+import { Formik, Form } from "formik/dist";
+import { useEffect, useState } from "react";
+import { useLazyGetOrdersQuery } from "redux/api/inventory";
 import { getDate, getTimeMoment } from "utilis";
+import FormikControl from "validation/FormikControl";
 
 const Orders = () => {
-  const { data: orders, isLoading: loading } = useGetOrdersQuery();
   const [selected, setSelected] = useState([]);
-  if (loading) return <Skeletons />;
+  // if (loading) return <Skeletons />;
 
   const headcells = [
     "Order ID",
@@ -21,38 +23,87 @@ const Orders = () => {
     "Status",
     "",
   ];
+  const [getOrders, { data: orders, isLoading, isFetching }] =
+    useLazyGetOrdersQuery();
+  const onSubmit = async (values) => {
+    // console.log(values);
+    await getOrders({
+      search: values.search,
+    });
+    // console.log(data);
+  };
+  useEffect(() => {
+    getOrders({ search: "" });
+  }, [getOrders]);
   return (
     <Grid item container flexDirection="column">
-      <Card sx={{ width: "100%" }}>
-        {orders?.length > 0 ? (
-          <Grid
-            item
-            container
-            direction="column"
-            overflow="hidden"
-            sx={{ mt: 2 }}
-            maxWidth={{ md: "100%", sm: "100%", xs: "100%" }}
-          >
-            <BasicTable
-              tableHead={headcells}
-              rows={orders}
-              setSelected={setSelected}
-              selected={selected}
-              paginationLabel="Orders per page"
-              hasCheckbox={false}
-              per_page={orders?.per_page}
-              totalPage={orders?.length}
-              nextPageUrl={orders?.next_page_url}
+      <Grid
+        item
+        container
+        alignItems="center"
+        gap={{ md: 8, xs: 2 }}
+        sx={{ my: 3 }}
+        flexWrap={"nowrap"}
+      >
+        <Grid item flex={1}>
+          <Formik initialValues={{ search: "" }} onSubmit={onSubmit}>
+            <Form noValidate style={{ width: "100%" }}>
+              <Grid item container gap={2}>
+                <Grid item flex={1}>
+                  <FormikControl
+                    name="search"
+                    placeholder="Search Orders by OrderId"
+                  />
+                </Grid>
+                <Grid item>
+                  <CustomButton
+                    title="Search"
+                    type="submit"
+                    disabled={isFetching}
+                  />
+                </Grid>
+              </Grid>
+            </Form>
+          </Formik>
+        </Grid>
+      </Grid>
+      {isLoading ? (
+        <Skeletons />
+      ) : (
+        <Card sx={{ width: "100%" }}>
+          {orders?.length > 0 ? (
+            <Grid
+              item
+              container
+              direction="column"
+              overflow="hidden"
+              sx={{ mt: 2 }}
+              maxWidth={{ md: "100%", sm: "100%", xs: "100%" }}
             >
-              {orders?.map((row) => (
-                <Rows key={row.id} row={row} hasCheckbox={true} />
-              ))}
-            </BasicTable>
-          </Grid>
-        ) : (
-          <EmptyCell paginationLabel="Orders  per page" headCells={headcells} />
-        )}
-      </Card>
+              <BasicTable
+                tableHead={headcells}
+                rows={orders}
+                setSelected={setSelected}
+                selected={selected}
+                paginationLabel="Orders per page"
+                hasCheckbox={false}
+                per_page={orders?.per_page}
+                totalPage={orders?.length}
+                nextPageUrl={orders?.next_page_url}
+              >
+                {orders?.map((row) => (
+                  <Rows key={row.id} row={row} hasCheckbox={true} />
+                ))}
+              </BasicTable>
+            </Grid>
+          ) : (
+            <EmptyCell
+              paginationLabel="Orders  per page"
+              headCells={headcells}
+            />
+          )}
+        </Card>
+      )}
     </Grid>
   );
 };
