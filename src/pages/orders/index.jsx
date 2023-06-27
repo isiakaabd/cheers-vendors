@@ -1,55 +1,30 @@
-import {
-  DeleteOutline,
-  EditOutlined,
-  MoreHorizOutlined,
-} from "@mui/icons-material";
-import {
-  Grid,
-  Card,
-  TableCell,
-  Skeleton,
-  IconButton,
-  MenuItem,
-  ListItemIcon,
-  ListItemText,
-  Checkbox,
-} from "@mui/material";
+import { Grid, Card, TableCell, Skeleton } from "@mui/material";
 import EmptyCell from "components/EmptyTable";
 import BasicTable from "components/Table";
 import { useState } from "react";
-import {
-  useDeleteInventoryMutation,
-  useGetInventoriesQuery,
-} from "redux/api/inventory";
-import { getTimeMoment } from "utilis";
-import BasicMenu from "components/MenuComponent";
-import { toast } from "react-toastify";
-// import { useNavigate } from "react-router-dom";
-import Dialogs from "components/Dialog";
-import CreateInventory from "pages/vendors/component";
+import { useGetOrdersQuery } from "redux/api/inventory";
+import { getDate, getTimeMoment } from "utilis";
 
 const Orders = () => {
-  const { data: inventories, isLoading: loading } = useGetInventoriesQuery();
+  const { data: orders, isLoading: loading } = useGetOrdersQuery();
   const [selected, setSelected] = useState([]);
   if (loading) return <Skeletons />;
 
   const headcells = [
-    "Name",
-    "Order No",
-    "Product SKU",
+    "Order ID",
+    "SKU",
     "Confirmation No",
     "Updated Date",
     "Customer Info",
     "Shipment Method",
     "Settlement",
     "Status",
-
     "",
   ];
   return (
     <Grid item container flexDirection="column">
       <Card sx={{ width: "100%" }}>
-        {inventories?.data?.length > 0 ? (
+        {orders?.length > 0 ? (
           <Grid
             item
             container
@@ -60,16 +35,16 @@ const Orders = () => {
           >
             <BasicTable
               tableHead={headcells}
-              rows={inventories}
+              rows={orders}
               setSelected={setSelected}
               selected={selected}
               paginationLabel="Orders per page"
-              hasCheckbox
-              per_page={inventories?.per_paWge}
-              totalPage={inventories?.to}
-              nextPageUrl={inventories?.next_page_url}
+              hasCheckbox={false}
+              per_page={orders?.per_page}
+              totalPage={orders?.length}
+              nextPageUrl={orders?.next_page_url}
             >
-              {inventories?.data?.map((row) => (
+              {orders?.map((row) => (
                 <Rows key={row.id} row={row} hasCheckbox={true} />
               ))}
             </BasicTable>
@@ -82,147 +57,40 @@ const Orders = () => {
   );
 };
 
-function Rows({ row, hasCheckbox, setSelected, selected }) {
-  const { id, description, category, price, title, created_at } = row;
+function Rows({ row }) {
+  const {
+    order_id,
+    user,
+    settlement,
+    shipment,
+    wishlist,
+    updated_at,
+    confirmation_date,
+    status,
+  } = row;
   // const navigate = useNavigate();
-  const [deleteInventory, { isLoading: deleting, status }] =
-    useDeleteInventoryMutation();
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event) => {
-    event.stopPropagation();
-    setAnchorEl(event.currentTarget);
-  };
 
-  const handleClose = (event) => {
-    event.stopPropagation();
-    setAnchorEl(null);
-  };
-  const handleDelete = async (e) => {
-    e.stopPropagation();
-    const { error } = await deleteInventory(id);
-
-    if (status === "fulfilled") {
-      toast.success("Inventory deleted successfully");
-      setTimeout(() => handleClose(), 1000);
-    }
-    if (error) toast.error(error);
-  };
-
-  const handleClicks = (event, row) => {
-    // console.log(title);
-    const selectedIndex = selected.indexOf(row);
-    selected.indexOf(row);
-    let newSelected = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, row);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
-    }
-
-    setSelected(newSelected);
-  };
-  const isSelected = (id) => selected?.indexOf(id) !== -1;
-  const isItemSelected = isSelected(id);
-  const [edit, setEdit] = useState(false);
-  const initials = {
-    id,
-    title,
-    description,
-    price,
-    category: category.title,
-  };
   return (
     <>
-      {hasCheckbox && (
-        <TableCell padding="checkbox">
-          <Checkbox
-            size="large"
-            color="primary"
-            onClick={(event) => handleClicks(event, id)}
-            checked={isItemSelected}
-          />
-        </TableCell>
-      )}
-
+      {/* <TableCell scope="row" align="left">
+        {status}
+      </TableCell> */}
       <TableCell scope="row" align="left">
-        {title}
+        {order_id}
       </TableCell>
       <TableCell scope="row" align="left">
-        {title}
+        {wishlist?.product?.sku}
       </TableCell>
       <TableCell scope="row" align="left">
-        {title}
+        {confirmation_date ? getDate(confirmation_date) : "No Date yet"}
       </TableCell>
-      <TableCell scope="row" align="left">
-        {title}
-      </TableCell>
-      <TableCell align="left">{getTimeMoment(created_at)}</TableCell>
-      <TableCell align="left">{price}</TableCell>
-      <TableCell align="left">{description}</TableCell>
-      <TableCell align="left">{category?.title}</TableCell>
+      <TableCell align="left">{getTimeMoment(updated_at)}</TableCell>
       <TableCell align="left">
-        <IconButton
-          id="basic-button"
-          aria-controls={open ? "basic-menu" : undefined}
-          aria-haspopup="true"
-          aria-expanded={open ? "true" : undefined}
-          onClick={handleClick}
-        >
-          <MoreHorizOutlined />
-        </IconButton>
-
-        <BasicMenu
-          open={open}
-          anchorEl={anchorEl}
-          setAnchorEl={setAnchorEl}
-          handleClick={handleClick}
-          handleClose={handleClose}
-        >
-          <MenuItem onClick={handleDelete} sx={{ color: "red" }}>
-            <ListItemIcon>
-              <DeleteOutline fontSize="large" sx={{ color: "red" }} />
-            </ListItemIcon>
-
-            <ListItemText>{!deleting ? "Delete" : "Deleting"}</ListItemText>
-          </MenuItem>
-          <MenuItem
-            onClick={(e) => {
-              setEdit(true);
-              handleClose(e);
-            }}
-          >
-            <ListItemIcon>
-              <EditOutlined fontSize="large" />
-            </ListItemIcon>
-
-            <ListItemText>Edit </ListItemText>
-          </MenuItem>
-        </BasicMenu>
+        {user?.first_name} {user?.last_name}
       </TableCell>
-      <Dialogs
-        isOpen={edit}
-        handleClose={(e) => {
-          setEdit(false);
-          handleClose(e);
-        }}
-      >
-        <CreateInventory
-          // open={open}
-          setOpen={setEdit}
-          values={initials}
-          type="edit"
-          heading={"Edit Inventory"}
-        />
-      </Dialogs>
+      <TableCell align="left">{shipment ? shipment : "NA"}</TableCell>
+      <TableCell align="left">{settlement ? settlement : "NA"}</TableCell>
+      <TableCell align="left">{status}</TableCell>
     </>
   );
 }

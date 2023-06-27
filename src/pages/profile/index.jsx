@@ -3,7 +3,10 @@ import CustomButton from "components/CustomButton";
 import { Formik, Form } from "formik/dist";
 import { PhotoProvider, PhotoView } from "react-photo-view";
 import { toast } from "react-toastify";
-import { useGetVendorProfileQuery } from "redux/api/authSlice";
+import {
+  useChangePasswordMutation,
+  useGetVendorProfileQuery,
+} from "redux/api/authSlice";
 import { useUpdateProfileMutation } from "redux/api/vendor";
 import FormikControl from "validation/FormikControl";
 import * as Yup from "yup";
@@ -31,9 +34,25 @@ const validationSchema = Yup.object().shape({
     .max(12, "Maximum 12 digit")
     .required("Phone is required"),
 });
+const passwordValidationSchema = Yup.object().shape({
+  oldpassword: Yup.string().required("Enter your Old password"),
+
+  password: Yup.string()
+    .required("Enter your password")
+    .min(8, "password too short")
+    .matches(/^(?=.*[a-z])/, "Must contain at least one lowercase character")
+    .matches(/^(?=.*[A-Z])/, "Must contain at least one uppercase character")
+    .matches(/^(?=.*[0-9])/, "Must contain at least one number")
+    .matches(/^(?=.*[!@#%&])/, "Must contain at least one special character"),
+
+  cpassword: Yup.string("Password")
+    .oneOf([Yup.ref("password"), null], "Passwords must match")
+    .required("Password is required"),
+});
 const Profile = () => {
   const { data: profile, isLoading, error } = useGetVendorProfileQuery();
   const [updateProfile] = useUpdateProfileMutation();
+  const [changePassword, { isLoading: load }] = useChangePasswordMutation();
   if (isLoading) return <Skeletons />;
 
   if (error) return <Typography>Something went wrong..</Typography>;
@@ -72,6 +91,15 @@ const Profile = () => {
 
       toast.error(picsError[0] || err.message || "Something went wrong..");
     }
+  };
+  const onSubmitPassword = async (values) => {
+    const { password, cpassword, oldpassword } = values;
+    const { data } = await changePassword({
+      old_password: oldpassword,
+      new_password: password,
+      new_password_confirmation: cpassword,
+    });
+    console.log(data);
   };
   const { email, first_name, vendor_name, last_name, phone, profile_picture } =
     profile;
@@ -205,48 +233,54 @@ const Profile = () => {
         <Grid item sx={{ mx: "auto" }} md={8} xs={12}>
           <Formik
             enableReinitialize
-            onSubmit={onSubmit}
-            validationSchema={validationSchema}
+            onSubmit={onSubmitPassword}
+            validationSchema={passwordValidationSchema}
             initialValues={{
               password: "",
               cpassword: "",
+              oldpassword: "",
             }}
           >
-            {({ values, errors, isSubmitting }) => (
-              <Form noValidate>
-                <Typography sx={{ mb: 2 }} variant="h1">
-                  Update Password
-                </Typography>
+            <Form noValidate>
+              <Typography sx={{ mb: 2 }} variant="h1">
+                Update Password
+              </Typography>
 
-                <Grid item container gap={2}>
-                  {/* <Grid item container gap={2} flexWrap="nowrap"> */}
-                  <Grid item container>
-                    <FormikControl
-                      name="password"
-                      type="password"
-                      autoComplete="off"
-                      placeholder="New Password"
-                    />
-                  </Grid>
-                  <Grid item container>
-                    <FormikControl
-                      name="cpassword"
-                      type="password"
-                      placeholder="Confirm Password"
-                    />
-                    {/* </Grid> */}
-                  </Grid>
-
-                  <Grid item xs={12} sm={4} sx={{ mx: "auto" }}>
-                    <CustomButton
-                      title="Update Password"
-                      type="submit"
-                      isSubmitting={isSubmitting}
-                    />
-                  </Grid>
+              <Grid item container gap={2}>
+                <Grid item container>
+                  <FormikControl
+                    name="oldpassword"
+                    type="password"
+                    autoComplete="off"
+                    placeholder="Old Password"
+                  />
                 </Grid>
-              </Form>
-            )}
+                <Grid item container>
+                  <FormikControl
+                    name="password"
+                    type="password"
+                    autoComplete="off"
+                    placeholder="New Password"
+                  />
+                </Grid>
+                <Grid item container>
+                  <FormikControl
+                    name="cpassword"
+                    type="password"
+                    placeholder="Confirm Password"
+                  />
+                  {/* </Grid> */}
+                </Grid>
+
+                <Grid item xs={12} sm={4} sx={{ mx: "auto" }}>
+                  <CustomButton
+                    title="Update Password"
+                    type="submit"
+                    isSubmitting={load}
+                  />
+                </Grid>
+              </Grid>
+            </Form>
           </Formik>
         </Grid>
       </Grid>

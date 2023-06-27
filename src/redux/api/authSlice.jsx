@@ -58,6 +58,15 @@ export const authSlice = api.injectEndpoints({
       transformErrorResponse: (error) => error.message,
       transformResponse: (data) => data.data,
     }),
+    changePassword: builder.mutation({
+      query: (body) => ({
+        url: "/change-password",
+        method: "PATCH",
+        body,
+      }),
+      transformErrorResponse: (error) => error.message,
+      transformResponse: (data) => data.data,
+    }),
     refreshToken: builder.mutation({
       query: (body) => ({
         url: "/refresh-token",
@@ -98,5 +107,6 @@ export const {
   useForgotPasswordMutation,
   useResetPasswordMutation,
   useLogoutMutation,
+  useChangePasswordMutation,
   useGetVendorProfileQuery,
 } = authSlice;

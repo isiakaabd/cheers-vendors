@@ -11,7 +11,6 @@ import {
   Box,
   Checkbox,
   Toolbar,
-  Typography,
   MenuItem,
   ListItemText,
   ListItemIcon,
@@ -229,7 +228,7 @@ const EnhancedTableToolbar = (props) => {
         }),
       }}
     >
-      {numSelected > 0 ? (
+      {/* {numSelected > 0 ? (
         <Typography sx={{ flex: "1 1 100%" }} color="inherit" variant="h4">
           {`${numSelected} ${
             numSelected > 1 ? "Inventories" : "Inventory"
@@ -239,7 +238,7 @@ const EnhancedTableToolbar = (props) => {
         <Typography sx={{ flex: "1 1 100%" }} variant="h4" id="tableTitle">
           {numSelected > 1 ? "Inventories" : "Inventory"}
         </Typography>
-      )}
+      )} */}
 
       {numSelected > 0 && (
         // <Tooltip

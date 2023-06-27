@@ -20,10 +20,10 @@ import CustomButton from "components/CustomButton";
 import Dialogs from "components/Dialog";
 import EmptyCell from "components/EmptyTable";
 import BasicTable from "components/Table";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   useDeleteInventoryMutation,
-  useGetInventoriesQuery,
+  useLazyGetInventoriesQuery,
 } from "redux/api/inventory";
 import { getTimeMoment } from "utilis";
 import BasicMenu from "components/MenuComponent";
@@ -34,11 +34,15 @@ import { Form, Formik } from "formik/dist";
 import FormikControl from "validation/FormikControl";
 
 const Inventories = () => {
-  const { data: inventories, isLoading: loading } = useGetInventoriesQuery();
+  const [getInventory, { data: inventories, isLoading: loading }] =
+    useLazyGetInventoriesQuery();
   const [selected, setSelected] = useState([]);
+  useEffect(() => {
+    getInventory({ search: "" });
+  }, [getInventory]);
 
   const [open, setOpen] = useState(false);
-  if (loading) return <Skeletons />;
+  // if (loading) return <Skeletons />;
   const headcells = [
     "Name",
     "SKU",
@@ -49,6 +53,13 @@ const Inventories = () => {
     "Category",
     "",
   ];
+  const onSubmit = async (values) => {
+    // console.log(values);
+    await getInventory({
+      search: values.search,
+    });
+    // console.log(data);
+  };
   return (
     <>
       <Grid item container flexDirection="column">
@@ -62,13 +73,21 @@ const Inventories = () => {
         >
           <Grid item flex={1}>
             <Formik
-              initialValues={{ email: "" }}
-              // onSubmit={onSubmit}
+              initialValues={{ search: "" }}
+              onSubmit={onSubmit}
               // validationSchema={validationSchema}
             >
               <Form noValidate style={{ width: "100%" }}>
-                <Grid item container>
-                  <FormikControl name="email" placeholder="Search Inventory" />
+                <Grid item container gap={2}>
+                  <Grid item flex={1}>
+                    <FormikControl
+                      name="search"
+                      placeholder="Search Inventory by Title and SKU"
+                    />
+                  </Grid>
+                  <Grid item>
+                    <CustomButton title="Search" type="submit" />
+                  </Grid>
                 </Grid>
               </Form>
             </Formik>
@@ -82,45 +101,59 @@ const Inventories = () => {
             />
           </Grid>
         </Grid>
-        <Card sx={{ width: "100%" }}>
-          {inventories?.data?.length > 0 ? (
-            <Grid
-              item
-              container
-              direction="column"
-              overflow="hidden"
-              sx={{ mt: 2 }}
-              maxWidth={{ md: "100%", sm: "100%", xs: "100%" }}
-            >
-              <BasicTable
-                tableHead={headcells}
-                rows={inventories}
-                setSelected={setSelected}
-                selected={selected}
-                paginationLabel="inventories per page"
-                hasCheckbox={true}
-                per_page={inventories?.per_page}
-                totalPage={inventories?.to}
-                nextPageUrl={inventories?.next_page_url}
+        {loading ? (
+          <Skeletons />
+        ) : (
+          <Card sx={{ width: "100%" }}>
+            {inventories?.data?.length > 0 || inventories?.length > 0 ? (
+              <Grid
+                item
+                container
+                direction="column"
+                overflow="hidden"
+                sx={{ mt: 2 }}
+                maxWidth={{ md: "100%", sm: "100%", xs: "100%" }}
               >
-                {inventories?.data?.map((row) => (
-                  <Rows
-                    key={row.id}
-                    row={row}
-                    hasCheckbox={true}
-                    selected={selected}
-                    setSelected={setSelected}
-                  />
-                ))}
-              </BasicTable>
-            </Grid>
-          ) : (
-            <EmptyCell
-              paginationLabel="Availability  per page"
-              headCells={headcells}
-            />
-          )}
-        </Card>
+                <BasicTable
+                  tableHead={headcells}
+                  rows={inventories || inventories?.data}
+                  setSelected={setSelected}
+                  selected={selected}
+                  paginationLabel="inventories per page"
+                  hasCheckbox={true}
+                  per_page={inventories?.per_page}
+                  totalPage={inventories?.to}
+                  nextPageUrl={inventories?.next_page_url}
+                >
+                  {inventories?.data
+                    ? inventories?.data.map((row) => (
+                        <Rows
+                          key={row.id}
+                          row={row}
+                          hasCheckbox={true}
+                          selected={selected}
+                          setSelected={setSelected}
+                        />
+                      ))
+                    : inventories?.map((row) => (
+                        <Rows
+                          key={row.id}
+                          row={row}
+                          hasCheckbox={true}
+                          selected={selected}
+                          setSelected={setSelected}
+                        />
+                      ))}
+                </BasicTable>
+              </Grid>
+            ) : (
+              <EmptyCell
+                paginationLabel="Availability  per page"
+                headCells={headcells}
+              />
+            )}
+          </Card>
+        )}
       </Grid>
 
       <Dialogs isOpen={open} handleClose={() => setOpen(false)}>
@@ -225,9 +258,6 @@ function Rows({ row, hasCheckbox, setSelected, selected }) {
                 handleClicks(event, id);
               }}
               checked={isItemSelected}
-              // inputProps={{
-              //   "aria-labelledby": labelId,
-              // }}
             />
           </TableCell>
         )}

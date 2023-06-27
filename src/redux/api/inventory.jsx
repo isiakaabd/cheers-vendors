@@ -3,18 +3,24 @@ import { api } from "./api";
 export const inventorySlice = api.injectEndpoints({
   endpoints: (builder) => ({
     getInventories: builder.query({
-      query: () => ({
-        url: "/inventories",
-        method: "GET",
+      query: ({ search }) => ({
+        url: `/inventories${search && `/search?search=${search}`}`,
       }),
       providesTags: ["inventory"],
+      transformResponse: (response) => response.data,
+      transformErrorResponse: (error) => error.message,
+    }),
+    getOrders: builder.query({
+      query: () => ({
+        url: `/orders`,
+      }),
+      providesTags: ["order"],
       transformResponse: (response) => response.data,
       transformErrorResponse: (error) => error.message,
     }),
     getInventory: builder.query({
       query: (id) => ({
         url: `/inventories/${id}`,
-        method: "GET",
       }),
       providesTags: ["inventory"],
       transformResponse: (response) => response.data,
@@ -63,4 +69,6 @@ export const {
   useDeleteInventoryMutation,
   useGetInventoryQuery,
   useUpdateInventoryMutation,
+  useLazyGetInventoriesQuery,
+  useGetOrdersQuery,
 } = inventorySlice;
