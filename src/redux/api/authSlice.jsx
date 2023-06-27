@@ -61,11 +61,11 @@ export const authSlice = api.injectEndpoints({
     changePassword: builder.mutation({
       query: (body) => ({
         url: "/change-password",
-        method: "PATCH",
+        method: "POST",
         body,
       }),
-      transformErrorResponse: (error) => error.message,
-      transformResponse: (data) => data.data,
+      transformErrorResponse: (error) => error.data.message,
+      transformResponse: (data) => data.message,
     }),
     refreshToken: builder.mutation({
       query: (body) => ({

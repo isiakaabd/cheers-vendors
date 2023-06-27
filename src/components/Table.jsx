@@ -14,6 +14,7 @@ import {
   MenuItem,
   ListItemText,
   ListItemIcon,
+  Typography,
 } from "@mui/material";
 import PropTypes from "prop-types";
 import { useTheme } from "@mui/material/styles";
@@ -139,6 +140,7 @@ export default function BasicTable({
       <EnhancedTableToolbar
         numSelected={selected?.length}
         selected={selected}
+        hasCheckbox={hasCheckbox}
       />
       <TableContainer component={Paper} sx={{ width: "100%" }}>
         <Table sx={{ width: "100%" }} aria-label="table">
@@ -193,7 +195,7 @@ Table.propTypes = {
 };
 
 const EnhancedTableToolbar = (props) => {
-  const { numSelected, selected } = props;
+  const { numSelected, selected, hasCheckbox } = props;
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -228,17 +230,20 @@ const EnhancedTableToolbar = (props) => {
         }),
       }}
     >
-      {/* {numSelected > 0 ? (
-        <Typography sx={{ flex: "1 1 100%" }} color="inherit" variant="h4">
-          {`${numSelected} ${
-            numSelected > 1 ? "Inventories" : "Inventory"
-          } selected`}
-        </Typography>
-      ) : (
-        <Typography sx={{ flex: "1 1 100%" }} variant="h4" id="tableTitle">
-          {numSelected > 1 ? "Inventories" : "Inventory"}
-        </Typography>
-      )} */}
+      {hasCheckbox ? (
+        numSelected > 0 ? (
+          <Typography sx={{ flex: "1 1 100%" }} color="inherit" variant="h4">
+            {`${numSelected} ${
+              numSelected > 1 ? "Inventories" : "Inventory"
+            } selected`}
+          </Typography>
+        ) : (
+          <Typography sx={{ flex: "1 1 100%" }} variant="h4" id="tableTitle">
+            {numSelected > 1 ? "Inventories" : "Inventory"}
+          </Typography>
+        )
+      ) : null}
+      {}
 
       {numSelected > 0 && (
         // <Tooltip
@@ -312,4 +317,7 @@ const EnhancedTableToolbar = (props) => {
 
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
+};
+EnhancedTableToolbar.defaultProps = {
+  hasCheckbox: false,
 };

@@ -92,14 +92,19 @@ const Profile = () => {
       toast.error(picsError[0] || err.message || "Something went wrong..");
     }
   };
-  const onSubmitPassword = async (values) => {
+  const onSubmitPassword = async (values, onSubmitProps) => {
     const { password, cpassword, oldpassword } = values;
-    const { data } = await changePassword({
-      old_password: oldpassword,
-      new_password: password,
-      new_password_confirmation: cpassword,
-    });
-    console.log(data);
+    const formData = new FormData();
+    formData.append("old_password", oldpassword);
+    formData.append("new_password", password);
+    formData.append("new_password_confirmation", cpassword);
+
+    const { data, error } = await changePassword(formData);
+
+    if (data) {
+      toast.success(data);
+    } else toast.error(error);
+    setTimeout(() => onSubmitProps.resetForm(), 200);
   };
   const { email, first_name, vendor_name, last_name, phone, profile_picture } =
     profile;

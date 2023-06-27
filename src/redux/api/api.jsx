@@ -9,6 +9,7 @@ const baseQuery = fetchBaseQuery({
     if (
       endpoint === "createInventory" ||
       endpoint === "updateInventory" ||
+      endpoint === "changePassword" ||
       endpoint === "updateProfile"
     ) {
       headers.append("Accept", "application/json");

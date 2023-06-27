@@ -34,13 +34,13 @@ import { Form, Formik } from "formik/dist";
 import FormikControl from "validation/FormikControl";
 
 const Inventories = () => {
-  const [getInventory, { data: inventories, isLoading: loading }] =
+  const [getInventory, { data: inventories, isLoading: loading, isFetching }] =
     useLazyGetInventoriesQuery();
   const [selected, setSelected] = useState([]);
   useEffect(() => {
     getInventory({ search: "" });
   }, [getInventory]);
-
+  console.log(inventories);
   const [open, setOpen] = useState(false);
   // if (loading) return <Skeletons />;
   const headcells = [
@@ -86,7 +86,11 @@ const Inventories = () => {
                     />
                   </Grid>
                   <Grid item>
-                    <CustomButton title="Search" type="submit" />
+                    <CustomButton
+                      title="Search"
+                      type="submit"
+                      disabled={isFetching}
+                    />
                   </Grid>
                 </Grid>
               </Form>

@@ -1,5 +1,7 @@
 import { api } from "./api";
+//127.0.0.1:8000/api/vendors/inventories/:inventoryId/37/image
 
+// http:
 export const inventorySlice = api.injectEndpoints({
   endpoints: (builder) => ({
     getInventories: builder.query({
@@ -10,6 +12,16 @@ export const inventorySlice = api.injectEndpoints({
       transformResponse: (response) => response.data,
       transformErrorResponse: (error) => error.message,
     }),
+    // deleteInventoryImage: builder.mutation({
+    //   query: ({ inventoryId, mediaId }) => ({
+    //     url:,
+    //     method: "DELETE",
+    //   }),
+
+    //   providesTags: ["inventory"],
+    //   // transformResponse: (response) => response.data,
+    //   // transformErrorResponse: (error) => error.message,
+    // }),
     getOrders: builder.query({
       query: () => ({
         url: `/orders`,
@@ -30,6 +42,14 @@ export const inventorySlice = api.injectEndpoints({
     deleteInventory: builder.mutation({
       query: (id) => ({
         url: `inventories/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["inventory"],
+      transformErrorResponse: (error) => error.message,
+    }),
+    deleteImage: builder.mutation({
+      query: ({ inventoryId, mediaId }) => ({
+        url: `/inventories/${inventoryId}/${mediaId}/image`,
         method: "DELETE",
       }),
       invalidatesTags: ["inventory"],
@@ -66,6 +86,8 @@ export const {
   useCreateInventoryMutation,
   useGetInventoriesQuery,
   useMultipleActionMutation,
+  useDeleteInventoryImageMutation,
+  useDeleteImageMutation,
   useDeleteInventoryMutation,
   useGetInventoryQuery,
   useUpdateInventoryMutation,

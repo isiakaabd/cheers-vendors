@@ -1,4 +1,4 @@
-import { Grid, Card, TableCell, Skeleton } from "@mui/material";
+import { Grid, Card, TableCell, Skeleton, Chip } from "@mui/material";
 import EmptyCell from "components/EmptyTable";
 import BasicTable from "components/Table";
 import { useState } from "react";
@@ -9,7 +9,7 @@ const Orders = () => {
   const { data: orders, isLoading: loading } = useGetOrdersQuery();
   const [selected, setSelected] = useState([]);
   if (loading) return <Skeletons />;
-
+  console.log(JSON.parse(orders[0].wishlist.properties));
   const headcells = [
     "Order ID",
     "SKU",
@@ -82,7 +82,7 @@ function Rows({ row }) {
         {wishlist?.product?.sku}
       </TableCell>
       <TableCell scope="row" align="left">
-        {confirmation_date ? getDate(confirmation_date) : "No Date yet"}
+        {confirmation_date ? getDate(confirmation_date) : "NA"}
       </TableCell>
       <TableCell align="left">{getTimeMoment(updated_at)}</TableCell>
       <TableCell align="left">
@@ -90,7 +90,21 @@ function Rows({ row }) {
       </TableCell>
       <TableCell align="left">{shipment ? shipment : "NA"}</TableCell>
       <TableCell align="left">{settlement ? settlement : "NA"}</TableCell>
-      <TableCell align="left">{status}</TableCell>
+      <TableCell align="left">
+        <Chip
+          label={status}
+          sx={{
+            fontSize: "1.2rem",
+          }}
+          color={
+            status === "pending"
+              ? "secondary"
+              : status === "completed"
+              ? "success"
+              : "primary"
+          }
+        />
+      </TableCell>
     </>
   );
 }

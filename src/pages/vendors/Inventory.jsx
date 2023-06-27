@@ -47,8 +47,17 @@ const Inventory = () => {
   const { data, isLoading } = useGetInventoryQuery(id);
   const [edit, setEdit] = useState(false);
   if (isLoading) return <Skeletons />;
-  const { media, title, stock, active, category, description, reviews, price } =
-    data;
+  const {
+    media,
+    id: ids,
+    title,
+    stock,
+    active,
+    category,
+    description,
+    reviews,
+    price,
+  } = data;
 
   const initials = {
     id,
@@ -115,7 +124,7 @@ const Inventory = () => {
         <Grid item container flexDirection={"column"} gap={2}>
           <Typography variant="h4">Images</Typography>
           {media.length > 0 ? (
-            <Images itemData={media} />
+            <Images itemData={media} inventoryId={ids} />
           ) : (
             <Typography variant="h5">No Images</Typography>
           )}
