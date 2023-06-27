@@ -153,7 +153,7 @@ const Profile = () => {
                     <FormikControl
                       name="vendor_name"
                       autoComplete="off"
-                      placeholder="Vendor Name"
+                      placeholder="Store Name"
                     />
                   </Grid>
                   <Grid item container>
