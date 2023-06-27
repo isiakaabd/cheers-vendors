@@ -40,9 +40,7 @@ const Inventories = () => {
   useEffect(() => {
     getInventory({ search: "" });
   }, [getInventory]);
-  console.log(inventories);
   const [open, setOpen] = useState(false);
-  // if (loading) return <Skeletons />;
   const headcells = [
     "Name",
     "SKU",
