@@ -9,7 +9,7 @@ const Orders = () => {
   const { data: orders, isLoading: loading } = useGetOrdersQuery();
   const [selected, setSelected] = useState([]);
   if (loading) return <Skeletons />;
-  console.log(JSON.parse(orders[0].wishlist.properties));
+
   const headcells = [
     "Order ID",
     "SKU",
