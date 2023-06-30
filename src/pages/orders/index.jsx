@@ -119,13 +119,9 @@ function Rows({ row }) {
     confirmation_date,
     status,
   } = row;
-  // const navigate = useNavigate();
 
   return (
     <>
-      {/* <TableCell scope="row" align="left">
-        {status}
-      </TableCell> */}
       <TableCell scope="row" align="left">
         {order_id}
       </TableCell>

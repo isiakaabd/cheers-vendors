@@ -176,7 +176,6 @@ const CreateInventory = ({ heading, values, setOpen, type }) => {
 
     setProperties(y[0]?.properties && JSON.parse(...y[0].properties));
   };
-  console.log(properties);
 
   return (
     <Grid item container gap={2} sx={{ pt: 0, height: "100%" }}>

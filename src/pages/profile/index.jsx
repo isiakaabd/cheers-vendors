@@ -288,6 +288,48 @@ const Profile = () => {
           </Formik>
         </Grid>
       </Grid>
+      <Grid item container mt={4}>
+        <Grid item sx={{ mx: "auto" }} md={8} xs={12}>
+          <Formik
+            enableReinitialize
+            onSubmit={onSubmitPassword}
+            validationSchema={passwordValidationSchema}
+            initialValues={{
+              accNo: "",
+              accName: "",
+              bank: "",
+            }}
+          >
+            <Form noValidate>
+              <Typography sx={{ mb: 2 }} variant="h1">
+                Update Account Details
+              </Typography>
+
+              <Grid item container gap={2}>
+                <Grid item container>
+                  <FormikControl name="accNo" placeholder="Account Number" />
+                </Grid>
+                <Grid item container>
+                  <FormikControl
+                    name="bank"
+                    control={"select"}
+                    placeholder="Select Your Bank"
+                    options={[]}
+                  />
+                </Grid>
+                <Grid item container>
+                  <FormikControl name="accName" placeholder="Account Name" />
+                  {/* </Grid> */}
+                </Grid>
+
+                <Grid item xs={12} sm={4} sx={{ mx: "auto" }}>
+                  <CustomButton title="Update Account" type="submit" />
+                </Grid>
+              </Grid>
+            </Form>
+          </Formik>
+        </Grid>
+      </Grid>
     </Grid>
   );
 };
