@@ -149,7 +149,6 @@ const Inventory = () => {
         }}
       >
         <CreateInventory
-          // open={open}
           setOpen={setEdit}
           values={initials}
           type="edit"

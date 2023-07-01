@@ -1,4 +1,12 @@
-import { Avatar, Grid, IconButton, Typography } from "@mui/material";
+import {
+  Avatar,
+  Chip,
+  Grid,
+  IconButton,
+  ListItem,
+  Paper,
+  Typography,
+} from "@mui/material";
 import CustomButton from "components/CustomButton";
 import { Formik, Form } from "formik/dist";
 import { useState } from "react";
@@ -52,25 +60,25 @@ const CreateInventory = ({ heading, values, setOpen, type }) => {
     } = values;
     const categoryId = categories?.filter((cat) => category === cat.title);
     const formData = new FormData();
-    const x = propertiesArray.map((property) => {
-      let vary = [];
+    // const x = propertiesArray.map((property) => {
+    //   let vary = [];
 
-      let prop = property.variant.split(",");
+    //   let prop = property.variant.split(",");
 
-      if (prop.length > 0) {
-        vary = [...prop];
-      } else {
-        vary = [...property];
-      }
-      return { name: property.name, variants: [...vary] };
-    });
+    //   if (prop.length > 0) {
+    //     vary = [...prop];
+    //   } else {
+    //     vary = [...property];
+    //   }
+    //   return { name: property.name, variants: [...vary] };
+    // });
 
     formData.append("title", title);
     formData.append("category_id", categoryId[0].id);
     formData.append("price", price);
     formData.append("active", active ? 1 : 0);
     formData.append("stock", stock);
-    formData.append("properties[]", JSON.stringify(x));
+    formData.append("properties[]", JSON.stringify(propertiesArray));
     formData.append("description", description);
 
     for (let i = 0; i < file.file.length; i++) {
@@ -122,22 +130,22 @@ const CreateInventory = ({ heading, values, setOpen, type }) => {
       file,
     } = values;
     const categoryId = categories?.filter((cat) => category === cat.title);
-    const x = propertiesArray.map((property) => {
-      let vary = [];
+    // const x = propertiesArray.map((property) => {
+    //   let vary = [];
 
-      let prop = property.variant.split(",");
+    //   let prop = property.variant.split(",");
 
-      if (prop.length > 0) {
-        vary = [...prop];
-      } else {
-        vary = [...property];
-      }
-      return { name: property.name, variants: [...vary] };
-    });
+    //   if (prop.length > 0) {
+    //     vary = [...prop];
+    //   } else {
+    //     vary = [...property];
+    //   }
+    //   return { name: property.name, variants: [...vary] };
+    // });
     const formData = new FormData();
     formData.append("_method", "put");
     formData.append("title", title);
-    formData.append("properties[]", JSON.stringify(x));
+    formData.append("properties[]", JSON.stringify(propertiesArray));
     formData.append("category_id", categoryId[0]?.id);
     formData.append("price", price);
     formData.append("active", active ? 1 : 0);
@@ -172,9 +180,35 @@ const CreateInventory = ({ heading, values, setOpen, type }) => {
   };
   const changeCategory = (e, setFieldValue) => {
     setFieldValue("category", e.target.value);
+
     let y = cats?.filter((item) => item.label === e.target.value);
 
     setProperties(y[0]?.properties && JSON.parse(...y[0].properties));
+    setFieldValue(
+      "propertiesArray",
+      y[0]?.properties && JSON.parse(...y[0].properties)
+    );
+  };
+
+  const handleDelete = (index, idx, values, setFieldValue) => {
+    let x = properties[index];
+    let b = x.variants;
+    let y = b[idx];
+    console.log(b, y);
+
+    let j = b.filter((v) => v !== y);
+    console.log(j);
+
+    // properties[index] = x;
+    let w = properties.map((item, idxs) => {
+      if (idxs === index) {
+        item.variants = j;
+      }
+      return item;
+    });
+    console.log(w);
+    setProperties(w);
+    setFieldValue("propertiesArray", w);
   };
 
   return (
@@ -196,6 +230,7 @@ const CreateInventory = ({ heading, values, setOpen, type }) => {
           onSubmit={type === "edit" ? handleSubmit : handleCreateInventory}
         >
           {({ isSubmitting, values, errors, setFieldValue }) => {
+            console.log(errors);
             return (
               <Form style={{ width: "100%" }}>
                 <Grid item container gap={2}>
@@ -238,14 +273,14 @@ const CreateInventory = ({ heading, values, setOpen, type }) => {
                     </Grid>
                   </Grid>
                   <Grid item container flexDirection={"column"}>
-                    <Grid item container flexWrap="nowrap" gap={2}>
+                    {/* <Grid item container flexWrap="nowrap" gap={2}>
                       <Grid item flex={1}>
                         <FormikControl
                           name="properties"
                           placeholder="Add a property"
                         />
                       </Grid>
-                      {/* {cats.properties && JS} */}
+                 
                       <Grid item>
                         <CustomButton
                           type="button"
@@ -266,35 +301,93 @@ const CreateInventory = ({ heading, values, setOpen, type }) => {
                           title={"Add Properties"}
                         />
                       </Grid>
-                    </Grid>
-                    {values?.propertiesArray?.length > 0 &&
-                      values?.propertiesArray?.map((property, index) => {
-                        return (
-                          <Grid item container flexWrap="nowrap" gap={2} mt={1}>
-                            <Grid item flex={1}>
-                              <FormikControl
-                                // value=
-                                name={`propertiesArray[${index}].variant`}
-                                label={property.name}
-                                placeholder={`${property.name}- use Comma(,) for more than one property e.g red,green,blue`}
-                              />
-                            </Grid>
-                            <Grid item>
-                              <CustomButton
-                                color={"secondary"}
-                                type="button"
-                                onClick={() => {
-                                  const arr = values.propertiesArray.filter(
-                                    (item) => item.name !== property.name
-                                  );
-                                  setFieldValue("propertiesArray", arr);
-                                }}
-                                title={"Delete "}
-                              />
-                            </Grid>
-                          </Grid>
-                        );
-                      })}
+                    </Grid> */}
+                    <Paper
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        flexWrap: "wrap",
+                        listStyle: "none",
+                        p: 0.5,
+                        m: 0,
+                      }}
+                      component="ul"
+                    >
+                      {" "}
+                      {values?.propertiesArray?.length > 0 &&
+                        values?.propertiesArray?.map((property, index) => {
+                          // let x = property.variant;
+                          // x.join(" ");
+                          // console.log(x);
+                          // return (
+
+                          // );
+                          //  return
+                          return (
+                            <>
+                              {/* <Grid
+                                item
+                                container
+                                flexWrap="nowrap"
+                                gap={2}
+                                mt={1}
+                              >
+                                <Grid item flex={1}>
+                                  <FormikControl
+                                    // value=
+                                    name={x}
+                                    label={property.name}
+                                    placeholder={`${property.name}- use Comma(,) for more than one property e.g red,green,blue`}
+                                  />
+                                </Grid>
+                                <Grid item>
+                                  <CustomButton
+                                    color={"secondary"}
+                                    type="button"
+                                    onClick={() => {
+                                      const arr = values.propertiesArray.filter(
+                                        (item) => item.name !== property.name
+                                      );
+                                      setFieldValue("propertiesArray", arr);
+                                    }}
+                                    title={"Delete "}
+                                  />
+                                </Grid>
+                              </Grid> */}
+                              <Grid
+                                item
+                                container
+                                alignItems={"center"}
+                                key={index}
+                              >
+                                <Grid item>{property.name}</Grid>
+                                <Grid item container>
+                                  {property?.variants?.map((item, idx) => (
+                                    <ListItem
+                                      key={idx}
+                                      sx={{ maxWidth: "max-content" }}
+                                    >
+                                      <Chip
+                                        // icon={icon}
+                                        label={item}
+                                        onDelete={() =>
+                                          handleDelete(
+                                            index,
+                                            idx,
+                                            values,
+                                            setFieldValue
+                                          )
+                                        }
+                                      />
+                                    </ListItem>
+                                  ))}
+                                </Grid>
+                              </Grid>
+                            </>
+                          );
+                        })}
+                    </Paper>
+
                     {properties && (
                       <Grid item>
                         {/* <FormikControl
