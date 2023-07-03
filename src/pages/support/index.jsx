@@ -1,4 +1,8 @@
-import { QuestionAnswerOutlined, SupportAgentSharp } from "@mui/icons-material";
+import {
+  HotTubOutlined,
+  QuestionAnswerOutlined,
+  SupportAgentSharp,
+} from "@mui/icons-material";
 import { Grid } from "@mui/material";
 import { SupportCard } from "components";
 
@@ -19,6 +23,14 @@ const Support = () => {
           to={"form"}
           heading={"Contact Customer Support"}
           subHeading={"Seek help from  our Support Team"}
+        />
+      </Grid>
+      <Grid item md={5} xs={12}>
+        <SupportCard
+          Icon={HotTubOutlined}
+          to={"message"}
+          heading={"Messages"}
+          subHeading={"Check Messages from Admin"}
         />
       </Grid>
     </Grid>

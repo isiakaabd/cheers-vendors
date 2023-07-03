@@ -9,6 +9,8 @@ import Support from "pages/support";
 import Orders from "pages/orders";
 import SupportForm from "components/SupportForm";
 import SupportFAQ from "components/SupportFAQ";
+import SupportMessages from "components/SupportMessages";
+import SupportMessage from "components/SupportMessage";
 
 const PrivateRoutes = () => {
   return (
@@ -26,6 +28,8 @@ const PrivateRoutes = () => {
         <Route path="support" element={<Support />} />
         <Route path="support/faq" element={<SupportFAQ />} />
         <Route path="support/form" element={<SupportForm />} />
+        <Route path="support/message" element={<SupportMessages />} />
+        <Route path="support/message/:id" element={<SupportMessage />} />
 
         <Route index element={<Inventories />} />
       </Route>

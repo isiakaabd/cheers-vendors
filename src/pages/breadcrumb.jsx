@@ -9,6 +9,8 @@ export const patterns = {
   Support: "support",
   FAQ: "support/faq",
   "Live Support": "support/form",
+  Messages: "support/message",
+  Message: "support/message/{id}",
   Profile: "account",
   Orders: "orders",
 };

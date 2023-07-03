@@ -46,6 +46,7 @@ import {
   useGetVendorProfileQuery,
   useLogoutMutation,
 } from "redux/api/authSlice";
+import NotificationMenu from "components/NotificationMenu";
 
 const drawerWidth = 260;
 
@@ -348,9 +349,11 @@ export default function MiniDrawer() {
 
             <HeaderText />
           </Grid>
+
           {/* profile pics */}
           <Grid item>
             <Grid item container alignItems="center" flexWrap="nowrap" gap={2}>
+              <NotificationMenu menuList={["list"]} />
               <Avatar
                 src={
                   profile?.media?.length > 0
