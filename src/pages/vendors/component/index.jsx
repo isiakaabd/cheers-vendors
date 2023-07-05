@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import CustomButton from "components/CustomButton";
 import { Formik, Form } from "formik/dist";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import {
   useCreateInventoryMutation,
@@ -20,6 +20,7 @@ import FormikControl from "validation/FormikControl";
 import * as Yup from "yup";
 import { PhotoProvider, PhotoView } from "react-photo-view";
 import { CloseOutlined } from "@mui/icons-material";
+import Images from "../ImageList";
 const validationSchema = Yup.object().shape({
   title: Yup.string().required("required"),
   stock: Yup.string().required("required"),
@@ -42,11 +43,18 @@ const CreateInventory = ({ heading, values, setOpen, type }) => {
     value: category.title,
     properties: category.properties,
   }));
+  // console.log(values);
+  useEffect(() => {
+    if (type === "edit") {
+      const JSONProperties = JSON.parse(values?.propertiesArray);
 
+      setProperties(JSONProperties);
+    }
+    //eslint-disable-next-line
+  }, [type]);
   const [active, setActive] = useState(0);
 
   const [properties, setProperties] = useState(null);
-
   const handleCreateInventory = async (values) => {
     const {
       title,
@@ -60,25 +68,13 @@ const CreateInventory = ({ heading, values, setOpen, type }) => {
     } = values;
     const categoryId = categories?.filter((cat) => category === cat.title);
     const formData = new FormData();
-    // const x = propertiesArray.map((property) => {
-    //   let vary = [];
-
-    //   let prop = property.variant.split(",");
-
-    //   if (prop.length > 0) {
-    //     vary = [...prop];
-    //   } else {
-    //     vary = [...property];
-    //   }
-    //   return { name: property.name, variants: [...vary] };
-    // });
 
     formData.append("title", title);
     formData.append("category_id", categoryId[0].id);
     formData.append("price", price);
     formData.append("active", active ? 1 : 0);
     formData.append("stock", stock);
-    formData.append("properties[]", JSON.stringify(propertiesArray));
+    formData.append("properties", JSON.stringify(propertiesArray));
     formData.append("description", description);
 
     for (let i = 0; i < file.file.length; i++) {
@@ -116,6 +112,7 @@ const CreateInventory = ({ heading, values, setOpen, type }) => {
     properties: "",
     stock: "",
     active: true,
+    media: [],
   };
 
   const handleSubmit = async (values) => {
@@ -130,22 +127,11 @@ const CreateInventory = ({ heading, values, setOpen, type }) => {
       file,
     } = values;
     const categoryId = categories?.filter((cat) => category === cat.title);
-    // const x = propertiesArray.map((property) => {
-    //   let vary = [];
 
-    //   let prop = property.variant.split(",");
-
-    //   if (prop.length > 0) {
-    //     vary = [...prop];
-    //   } else {
-    //     vary = [...property];
-    //   }
-    //   return { name: property.name, variants: [...vary] };
-    // });
     const formData = new FormData();
     formData.append("_method", "put");
     formData.append("title", title);
-    formData.append("properties[]", JSON.stringify(propertiesArray));
+    formData.append("properties", JSON.stringify(propertiesArray));
     formData.append("category_id", categoryId[0]?.id);
     formData.append("price", price);
     formData.append("active", active ? 1 : 0);
@@ -178,26 +164,23 @@ const CreateInventory = ({ heading, values, setOpen, type }) => {
       if (price?.length > 0) toast.error(price[0]);
     }
   };
+
   const changeCategory = (e, setFieldValue) => {
     setFieldValue("category", e.target.value);
 
     let y = cats?.filter((item) => item.label === e.target.value);
-
-    setProperties(y[0]?.properties && JSON.parse(...y[0].properties));
-    setFieldValue(
-      "propertiesArray",
-      y[0]?.properties && JSON.parse(...y[0].properties)
-    );
+    let x = JSON.parse(JSON.parse(JSON.stringify(y[0].properties)));
+    setProperties(y[0]?.properties && x);
+    setFieldValue("propertiesArray", y[0]?.properties && x);
   };
 
   const handleDelete = (index, idx, values, setFieldValue) => {
     let x = properties[index];
+    console.log(properties);
     let b = x.variants;
     let y = b[idx];
-    console.log(b, y);
 
     let j = b.filter((v) => v !== y);
-    console.log(j);
 
     // properties[index] = x;
     let w = properties.map((item, idxs) => {
@@ -206,7 +189,7 @@ const CreateInventory = ({ heading, values, setOpen, type }) => {
       }
       return item;
     });
-    console.log(w);
+
     setProperties(w);
     setFieldValue("propertiesArray", w);
   };
@@ -230,7 +213,11 @@ const CreateInventory = ({ heading, values, setOpen, type }) => {
           onSubmit={type === "edit" ? handleSubmit : handleCreateInventory}
         >
           {({ isSubmitting, values, errors, setFieldValue }) => {
-            console.log(errors);
+            let arr = JSON.parse(values.propertiesArray);
+            // let files =
+            //   values?.media.length > 0
+            //     ? [...values.media, values?.file?.preview]
+            //     : values?.file?.preview;
             return (
               <Form style={{ width: "100%" }}>
                 <Grid item container gap={2}>
@@ -314,15 +301,8 @@ const CreateInventory = ({ heading, values, setOpen, type }) => {
                       component="ul"
                     >
                       {" "}
-                      {values?.propertiesArray?.length > 0 &&
-                        values?.propertiesArray?.map((property, index) => {
-                          // let x = property.variant;
-                          // x.join(" ");
-                          // console.log(x);
-                          // return (
-
-                          // );
-                          //  return
+                      {arr?.length > 0 &&
+                        arr?.map((property, index) => {
                           return (
                             <>
                               {/* <Grid
@@ -360,7 +340,7 @@ const CreateInventory = ({ heading, values, setOpen, type }) => {
                                 alignItems={"center"}
                                 key={index}
                               >
-                                <Grid item>{property.name}</Grid>
+                                <Grid item>{property?.name}</Grid>
                                 <Grid item container>
                                   {property?.variants?.map((item, idx) => (
                                     <ListItem
@@ -368,7 +348,8 @@ const CreateInventory = ({ heading, values, setOpen, type }) => {
                                       sx={{ maxWidth: "max-content" }}
                                     >
                                       <Chip
-                                        // icon={icon}
+                                        color="primary"
+                                        sx={{ fontSize: "1.2rem" }}
                                         label={item}
                                         onDelete={() =>
                                           handleDelete(
@@ -502,6 +483,19 @@ const CreateInventory = ({ heading, values, setOpen, type }) => {
                       ))}
                     </Grid>
                   </PhotoProvider>
+                  {type === "edit" && (
+                    <Grid item container flexDirection={"column"} gap={2}>
+                      <Typography variant="h4">Existing Images</Typography>
+                      {values.media?.length > 0 ? (
+                        <Images
+                          itemData={values.media}
+                          inventoryId={values.id}
+                        />
+                      ) : (
+                        <Typography variant="h5">No Images</Typography>
+                      )}
+                    </Grid>
+                  )}
                 </Grid>
                 <Grid item container sx={{ mt: 3 }}>
                   <CustomButton

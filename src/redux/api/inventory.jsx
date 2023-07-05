@@ -12,16 +12,7 @@ export const inventorySlice = api.injectEndpoints({
       transformResponse: (response) => response.data,
       transformErrorResponse: (error) => error.message,
     }),
-    // deleteInventoryImage: builder.mutation({
-    //   query: ({ inventoryId, mediaId }) => ({
-    //     url:,
-    //     method: "DELETE",
-    //   }),
 
-    //   providesTags: ["inventory"],
-    //   // transformResponse: (response) => response.data,
-    //   // transformErrorResponse: (error) => error.message,
-    // }),
     getOrders: builder.query({
       query: ({ search }) => ({
         url: `/orders${search && `/search?search=${search}`}`,

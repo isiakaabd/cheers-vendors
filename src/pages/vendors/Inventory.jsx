@@ -47,6 +47,7 @@ const Inventory = () => {
   const { data, isLoading } = useGetInventoryQuery(id);
   const [edit, setEdit] = useState(false);
   if (isLoading) return <Skeletons />;
+
   const {
     media,
     id: ids,
@@ -66,7 +67,9 @@ const Inventory = () => {
     stock,
     active,
     price,
+    propertiesArray: [],
     category: category.title,
+    media,
   };
   return (
     <>

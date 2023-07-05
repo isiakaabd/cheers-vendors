@@ -36,6 +36,7 @@ import FormikControl from "validation/FormikControl";
 const Inventories = () => {
   const [getInventory, { data: inventories, isLoading: loading, isFetching }] =
     useLazyGetInventoriesQuery();
+
   const [selected, setSelected] = useState([]);
   useEffect(() => {
     getInventory({ search: "" });
@@ -167,6 +168,7 @@ const Inventories = () => {
 };
 
 function Rows({ row, hasCheckbox, setSelected, selected }) {
+  console.log(row);
   const {
     id,
     description,
@@ -178,6 +180,7 @@ function Rows({ row, hasCheckbox, setSelected, selected }) {
     properties,
     title,
     created_at,
+    media,
   } = row;
 
   const navigate = useNavigate();
@@ -238,6 +241,7 @@ function Rows({ row, hasCheckbox, setSelected, selected }) {
     active,
     propertiesArray: properties,
     category: category.title,
+    media,
   };
   return (
     <>
