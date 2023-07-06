@@ -168,7 +168,6 @@ const Inventories = () => {
 };
 
 function Rows({ row, hasCheckbox, setSelected, selected }) {
-  console.log(row);
   const {
     id,
     description,
@@ -239,7 +238,7 @@ function Rows({ row, hasCheckbox, setSelected, selected }) {
     price,
     stock,
     active,
-    propertiesArray: properties,
+    propertiesArray: JSON.parse(properties),
     category: category.title,
     media,
   };

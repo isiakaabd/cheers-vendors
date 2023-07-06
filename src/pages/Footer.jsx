@@ -43,8 +43,7 @@ const Footer = ({ open }) => {
               fontSize: { md: "2rem", xs: "1.2rem", sm: "1.5rem" },
             }}
           >
-            {" "}
-            2023&nbsp; &copy; &nbsp;
+            {new Date().getFullYear()}&nbsp; &copy; &nbsp;
             <Typography
               variant="span"
               color="text.primary"
@@ -54,68 +53,6 @@ const Footer = ({ open }) => {
             </Typography>
           </Typography>
         </Grid>
-        {/* <Grid item>
-          <Grid
-            item
-            container
-            alignItems="center"
-            sx={{
-              pr: { md: "2rem", xs: "1rem" },
-            }}
-            gap={{ md: 4, xs: 2 }}
-          >
-            <Typography
-              component={Link}
-              to="#"
-              sx={{
-                textDecoration: "none",
-                color: "#7e8299",
-                fontSize: { md: "2rem", xs: "1.2rem", sm: "1.5rem" },
-              }}
-            >
-              About
-            </Typography>
-            <Typography
-              component={Link}
-              to="#"
-              sx={{
-                textDecoration: "none",
-                color: "#7e8299",
-                fontSize: { md: "2rem", xs: "1.2rem", sm: "1.5rem" },
-              }}
-            >
-              Account
-            </Typography>
-            <Typography
-              component={Link}
-              to="#"
-              sx={{
-                textDecoration: "none",
-                color: "#7e8299",
-                fontSize: { md: "2rem", xs: "1.2rem", sm: "1.5rem" },
-              }}
-            >
-              Purchase
-            </Typography>
-            <List sx={{ display: "flex", alignItems: "center" }}>
-            <ListItem disableGutters>
-              <ListItemButton>
-                <ListItemText primary="About" />
-              </ListItemButton>
-            </ListItem>
-            <ListItem disableGutters>
-              <ListItemButton>
-                <ListItemText primary="Account" />
-              </ListItemButton>
-            </ListItem>
-            <ListItem disableGutters>
-              <ListItemButton>
-                <ListItemText primary="Purchase" />
-              </ListItemButton>
-            </ListItem>
-          </List> 
-          </Grid>
-        </Grid> */}
       </Grid>
     </AppBar>
   );

@@ -4,14 +4,6 @@ import { Badge, IconButton } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 export default function NotificationMenu({ menuList }) {
-  // const [anchorEl, setAnchorEl] = useState(null);
-  // const open = Boolean(anchorEl);
-  // const handleClick = (event) => {
-  //   setAnchorEl(event.currentTarget);
-  // };
-  // const handleClose = () => {
-  //   setAnchorEl(null);
-  // };
   function notificationsLabel(count) {
     if (count === 0) {
       return "no notifications";

@@ -315,7 +315,7 @@ export default function MiniDrawer() {
     );
 
     //eslint-disable-next-line
-  }, []);
+  }, [location.pathname]);
   const { data: profile, isLoading, isError } = useGetVendorProfileQuery();
 
   const navigate = useNavigate();

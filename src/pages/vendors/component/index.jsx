@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import CustomButton from "components/CustomButton";
 import { Formik, Form } from "formik/dist";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "react-toastify";
 import {
   useCreateInventoryMutation,
@@ -41,20 +41,21 @@ const CreateInventory = ({ heading, values, setOpen, type }) => {
   const cats = categories?.map((category) => ({
     label: category.title,
     value: category.title,
-    properties: category.properties,
+    properties: category?.properties,
   }));
   // console.log(values);
-  useEffect(() => {
-    if (type === "edit") {
-      const JSONProperties = JSON.parse(values?.propertiesArray);
+  // useEffect(() => {
+  //   if (type === "edit") {
+  //     const JSONProperties = JSON.parse(values?.propertiesArray);
 
-      setProperties(JSONProperties);
-    }
-    //eslint-disable-next-line
-  }, [type]);
+  //     setProperties(JSONProperties);
+  //   }
+  //   //eslint-disable-next-line
+  // }, [type]);
   const [active, setActive] = useState(0);
 
   const [properties, setProperties] = useState(null);
+  console.log(properties);
   const handleCreateInventory = async (values) => {
     const {
       title,
@@ -137,10 +138,9 @@ const CreateInventory = ({ heading, values, setOpen, type }) => {
     formData.append("active", active ? 1 : 0);
     formData.append("stock", stock);
     formData.append("description", description);
-    if (file?.length > 0) {
-      for (let i = 0; i < file.length; i++) {
-        formData.append("gallery[]", file[i]);
-      }
+
+    for (let i = 0; i < file.file.length; i++) {
+      formData.append(`gallery[${i}]`, file.file[i]);
     }
     const { data, error } = await updateInventory({
       id: values.id,
@@ -169,7 +169,8 @@ const CreateInventory = ({ heading, values, setOpen, type }) => {
     setFieldValue("category", e.target.value);
 
     let y = cats?.filter((item) => item.label === e.target.value);
-    let x = JSON.parse(JSON.parse(JSON.stringify(y[0].properties)));
+    let x = JSON.parse(y[0].properties);
+    console.log(x);
     setProperties(y[0]?.properties && x);
     setFieldValue("propertiesArray", y[0]?.properties && x);
   };
@@ -213,7 +214,9 @@ const CreateInventory = ({ heading, values, setOpen, type }) => {
           onSubmit={type === "edit" ? handleSubmit : handleCreateInventory}
         >
           {({ isSubmitting, values, errors, setFieldValue }) => {
-            let arr = JSON.parse(values.propertiesArray);
+            console.log(values);
+            let arr =
+              values?.propertiesArray?.length > 0 ? values.propertiesArray : [];
             // let files =
             //   values?.media.length > 0
             //     ? [...values.media, values?.file?.preview]
@@ -369,16 +372,16 @@ const CreateInventory = ({ heading, values, setOpen, type }) => {
                         })}
                     </Paper>
 
-                    {properties && (
+                    {/*  {properties && (
                       <Grid item>
-                        {/* <FormikControl
+                     <FormikControl
                           // value=
                           name={`propertiesArray[${index}].variant`}
                           label={property.name}
                           placeholder={`${property.name}- use Comma(,) for more than one property e.g red,green,blue`}
-                        /> */}
+                        /> 
                       </Grid>
-                    )}
+                    )}*/}
 
                     {errors.propertiesArray && (
                       <Typography color="error" variant="error">
