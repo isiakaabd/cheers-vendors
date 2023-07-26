@@ -55,7 +55,7 @@ const CreateInventory = ({ heading, values, setOpen, type }) => {
   const [active, setActive] = useState(0);
 
   const [properties, setProperties] = useState(null);
-  console.log(properties);
+
   const handleCreateInventory = async (values) => {
     const {
       title,

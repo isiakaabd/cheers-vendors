@@ -4,26 +4,44 @@ import CustomButton from "components/CustomButton";
 import { Formik, Form } from "formik/dist";
 import { useState } from "react";
 import { PhotoProvider, PhotoView } from "react-photo-view";
+import { toast } from "react-toastify";
+import { useCreateSupportMutation } from "redux/api/vendor";
 import FormikControl from "validation/FormikControl";
 import * as Yup from "yup";
+const validationSchema = Yup.object().shape({
+  title: Yup.string().required("required"),
+  message: Yup.string().required("required"),
+});
 const SupportForm = () => {
   const [active, setActive] = useState(0);
-  const validationSchema = Yup.object().shape({
-    challenge: Yup.string("Select a Challenge").required("required"),
-    description: Yup.number("Enter Description of the Challenge").required(
-      "required"
-    ),
-  });
+  const [createSupport, { isLoading }] = useCreateSupportMutation();
+  const onSubmit = async (values, { resetForm }) => {
+    const formData = new FormData();
+    const { title, message, file } = values;
+
+    formData.append("title", title);
+    formData.append("message", message);
+    if (file.file.length > 0) {
+      formData.append(`image`, file.file[0]);
+    }
+    const { data, error } = await createSupport(formData);
+    if (data) {
+      toast.success(data);
+      setTimeout(() => resetForm(), 300);
+    }
+    if (error) toast.error(error.message);
+  };
+
   return (
     <Grid item container>
       <Grid item sx={{ mx: "auto" }} md={8} xs={12}>
         <Formik
           enableReinitialize
-          // onSubmit={onSubmit}
+          onSubmit={onSubmit}
           validationSchema={validationSchema}
           initialValues={{
-            challenge: "",
-            description: "",
+            title: "",
+            message: "",
             file: "",
           }}
         >
@@ -36,25 +54,13 @@ const SupportForm = () => {
 
                 <Grid item container gap={2}>
                   <Grid item container>
-                    <FormikControl
-                      name="challenge"
-                      control={"select"}
-                      options={[
-                        { label: "Refund", value: "Refund" },
-                        {
-                          label: "Payment Reconciliation",
-                          value: "Payment Reconciliation",
-                        },
-                        { label: "Others", value: "Others" },
-                      ]}
-                      placeholder="Challenge"
-                    />
+                    <FormikControl name="title" placeholder="Title" />
                   </Grid>
                   <Grid item container>
                     <FormikControl
-                      name="description"
+                      name="message"
                       control="textarea"
-                      placeholder="Description"
+                      placeholder="Message"
                     />
                   </Grid>
                   <Grid item container>
@@ -151,8 +157,7 @@ const SupportForm = () => {
                     <CustomButton
                       title="Submit"
                       type="submit"
-
-                      // isSubmitting={isSubmitting}
+                      isSubmitting={isLoading}
                     />
                   </Grid>
                 </Grid>

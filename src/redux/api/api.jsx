@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { getUserDetails, logOut } from "redux/auth/auth.reducers";
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: "https://api.cheers.global/api/vendors",
+  baseUrl: process.env.REACT_APP_BASE_URL,
 
   prepareHeaders: (headers, { getState, endpoint, type }) => {
     const token = getState().auth.token;
@@ -10,7 +10,9 @@ const baseQuery = fetchBaseQuery({
       endpoint === "createInventory" ||
       endpoint === "updateInventory" ||
       endpoint === "changePassword" ||
-      endpoint === "updateProfile"
+      endpoint === "updateProfile" ||
+      endpoint === "createSupport" ||
+      endpoint === "replySupport"
     ) {
       headers.append("Accept", "application/json");
     } else {

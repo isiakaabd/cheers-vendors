@@ -36,11 +36,52 @@ export const adminSlice = api.injectEndpoints({
 
       invalidatesTags: ["vendor"],
     }),
+    createSupport: builder.mutation({
+      query: (body) => ({
+        url: `/support`,
+        method: "POST",
+        body,
+      }),
+      transformResponse: (response) => response.message,
+
+      invalidatesTags: ["vendor"],
+    }),
+    replySupport: builder.mutation({
+      query: (body) => ({
+        url: `/support/reply`,
+        method: "POST",
+        body,
+      }),
+      transformResponse: (response) => response.message,
+
+      invalidatesTags: ["vendor"],
+    }),
+    getSupport: builder.query({
+      query: () => ({
+        url: `/support`,
+      }),
+      transformResponse: (response) => response.data,
+
+      invalidatesTags: ["vendor"],
+    }),
+    getSupportsReply: builder.query({
+      query: (body) => ({
+        url: `/support/get-all-supports-replies`,
+        body,
+      }),
+      transformResponse: (response) => response.data,
+
+      invalidatesTags: ["vendor"],
+    }),
   }),
 });
 export const {
   useGetAllCategoriesQuery,
+  useGetSupportQuery,
   useGetUtilizeCategoriesQuery,
+  useGetSupportsReplyQuery,
   useGetCategoryQuery,
   useUpdateProfileMutation,
+  useCreateSupportMutation,
+  useReplySupportMutation,
 } = adminSlice;
