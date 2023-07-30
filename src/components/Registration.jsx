@@ -57,7 +57,6 @@ const Registration = () => {
       phone,
       password,
       confirmPassword,
-      // username,
     } = values;
     const body = {
       first_name: firstname,
@@ -65,7 +64,7 @@ const Registration = () => {
       email,
       phone,
       password,
-      // username,
+      username: vendor,
       vendor_name: vendor,
       password_confirmation: confirmPassword,
     };
@@ -135,7 +134,7 @@ const Registration = () => {
                   </Typography>
                 </Typography>
               </Grid>
-
+              ~{" "}
               <Grid item container gap={2}>
                 <Grid item container gap={2} flexWrap="nowrap">
                   <Grid item xs={6}>
