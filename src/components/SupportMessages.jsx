@@ -3,6 +3,7 @@ import CustomButton from "components/CustomButton";
 import EmptyCell from "components/EmptyTable";
 import BasicTable from "components/Table";
 import { Formik, Form } from "formik/dist";
+import { useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 import { useGetSupportQuery } from "redux/api/vendor";
@@ -13,6 +14,9 @@ const AllMessages = () => {
   const { data: supports, isLoading, isFetching } = useGetSupportQuery();
 
   const headcells = ["Title", "Date Created", "Message", "Status"];
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [page, setPage] = useState(0);
+
   if (isLoading) return <Skeletons />;
 
   const onSubmit = () => {};
@@ -61,20 +65,27 @@ const AllMessages = () => {
             <BasicTable
               tableHead={headcells}
               rows={supports}
-              paginationLabel="supports per page"
+              paginationLabel="Supports per page"
               hasCheckbox={false}
-              per_page={supports?.per_page}
-              totalPage={supports?.to}
-              nextPageUrl={supports?.next_page_url}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              setRowsPerPage={setRowsPerPage}
+              setPage={setPage}
             >
-              {supports?.map((row) => (
+              {(rowsPerPage > 0
+                ? supports.slice(
+                    page * rowsPerPage,
+                    page * rowsPerPage + rowsPerPage
+                  )
+                : supports
+              ).map((row) => (
                 <Rows key={row.id} row={row} />
               ))}
             </BasicTable>
           </Grid>
         ) : (
           <EmptyCell
-            paginationLabel="Availability  per page"
+            paginationLabel="Supports  per page"
             headCells={headcells}
           />
         )}

@@ -35,6 +35,9 @@ const Orders = () => {
   useEffect(() => {
     getOrders({ search: "" });
   }, [getOrders]);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [page, setPage] = useState(0);
+
   return (
     <Grid item container flexDirection="column">
       <Grid
@@ -87,12 +90,19 @@ const Orders = () => {
                 selected={selected}
                 paginationLabel="Orders per page"
                 hasCheckbox={false}
-                per_page={orders?.per_page}
-                totalPage={orders?.length}
-                nextPageUrl={orders?.next_page_url}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                setRowsPerPage={setRowsPerPage}
+                setPage={setPage}
               >
-                {orders?.map((row) => (
-                  <Rows key={row.id} row={row} hasCheckbox={true} />
+                {(rowsPerPage > 0
+                  ? orders.slice(
+                      page * rowsPerPage,
+                      page * rowsPerPage + rowsPerPage
+                    )
+                  : orders
+                ).map((row) => (
+                  <Rows key={row.id} row={row} />
                 ))}
               </BasicTable>
             </Grid>

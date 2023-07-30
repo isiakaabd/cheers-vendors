@@ -20,7 +20,7 @@ import { useLocation } from "react-router-dom";
 import FormikControl from "validation/FormikControl";
 import * as Yup from "yup";
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { PhotoProvider, PhotoSlider, PhotoView } from "react-photo-view";
 import Loader from "components/Loader";
 import { getTimeMoment } from "utilis";
@@ -63,15 +63,9 @@ const Message = () => {
   const handleCloses = () => setAnchorEls(null);
   const { id } = useParams();
   const [state, setState] = useState([]);
-  const { data, isLoading: loading } = useGetSupportsReplyQuery({
-    support_id: id,
-  });
+  const { data, isLoading: loading } = useGetSupportsReplyQuery(id);
   // const [status, setStatus] = useState(data?.is_open);
   const [replySupport, { isLoading }] = useReplySupportMutation();
-
-  useEffect(() => {
-    // setStatus(data?.is_open);
-  }, [data?.is_open]);
 
   const onSubmit = async (values, { resetForm }) => {
     const formData = new FormData();
@@ -95,7 +89,6 @@ const Message = () => {
       setTimeout(() => resetForm(), 300);
     }
     if (error) toast.error(error.message);
-    console.log(data);
   };
   const validationSchema = Yup.object().shape({
     message: Yup.string()

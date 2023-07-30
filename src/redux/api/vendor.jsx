@@ -44,7 +44,7 @@ export const adminSlice = api.injectEndpoints({
       }),
       transformResponse: (response) => response.message,
 
-      invalidatesTags: ["vendor"],
+      invalidatesTags: ["support"],
     }),
     replySupport: builder.mutation({
       query: (body) => ({
@@ -54,7 +54,7 @@ export const adminSlice = api.injectEndpoints({
       }),
       transformResponse: (response) => response.message,
 
-      invalidatesTags: ["vendor"],
+      invalidatesTags: ["support"],
     }),
     getSupport: builder.query({
       query: () => ({
@@ -62,16 +62,15 @@ export const adminSlice = api.injectEndpoints({
       }),
       transformResponse: (response) => response.data,
 
-      invalidatesTags: ["vendor"],
+      providesTags: ["support"],
     }),
     getSupportsReply: builder.query({
       query: (body) => ({
-        url: `/support/get-all-supports-replies`,
-        body,
+        url: `/support/get-all-supports-replies/${body}`,
       }),
       transformResponse: (response) => response.data,
 
-      invalidatesTags: ["vendor"],
+      providesTags: ["support"],
     }),
   }),
 });

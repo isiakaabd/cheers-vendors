@@ -59,6 +59,9 @@ const Inventories = () => {
     });
     // console.log(data);
   };
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [page, setPage] = useState(0);
+
   return (
     <>
       <Grid item container flexDirection="column">
@@ -115,17 +118,26 @@ const Inventories = () => {
               >
                 <BasicTable
                   tableHead={headcells}
-                  rows={inventories || inventories?.data}
+                  rows={
+                    inventories.length > 0 ? inventories : inventories?.data
+                  }
                   setSelected={setSelected}
                   selected={selected}
                   paginationLabel="inventories per page"
                   hasCheckbox={true}
-                  per_page={inventories?.per_page}
-                  totalPage={inventories?.to}
-                  nextPageUrl={inventories?.next_page_url}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  setRowsPerPage={setRowsPerPage}
+                  setPage={setPage}
                 >
                   {inventories?.data
-                    ? inventories?.data.map((row) => (
+                    ? (rowsPerPage > 0
+                        ? inventories?.data.slice(
+                            page * rowsPerPage,
+                            page * rowsPerPage + rowsPerPage
+                          )
+                        : inventories?.data
+                      ).map((row) => (
                         <Rows
                           key={row.id}
                           row={row}
@@ -134,7 +146,13 @@ const Inventories = () => {
                           setSelected={setSelected}
                         />
                       ))
-                    : inventories?.map((row) => (
+                    : (rowsPerPage > 0
+                        ? inventories.slice(
+                            page * rowsPerPage,
+                            page * rowsPerPage + rowsPerPage
+                          )
+                        : inventories
+                      ).map((row) => (
                         <Rows
                           key={row.id}
                           row={row}
@@ -147,7 +165,7 @@ const Inventories = () => {
               </Grid>
             ) : (
               <EmptyCell
-                paginationLabel="Availability  per page"
+                paginationLabel="Invoice  per page"
                 headCells={headcells}
               />
             )}
