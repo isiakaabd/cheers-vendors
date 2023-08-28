@@ -107,7 +107,6 @@ export default function BasicTable({
   setSelected,
   hasCheckbox,
   rowsPerPage,
-  totalPage,
   page,
   setPage,
   setRowsPerPage,

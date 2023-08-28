@@ -69,8 +69,31 @@ export const adminSlice = api.injectEndpoints({
         url: `/support/get-all-supports-replies/${body}`,
       }),
       transformResponse: (response) => response.data,
+      // transformResponse: (response) => response.data,
 
       providesTags: ["support"],
+    }),
+    getNotifications: builder.query({
+      query: () => ({
+        url: `/notifications`,
+      }),
+      providesTags: ["notification"],
+      transformResponse: (response) => response.data,
+    }),
+    readNotification: builder.query({
+      query: (id) => ({
+        url: `/notifications/${id}`,
+      }),
+      providesTags: ["notification"],
+      transformResponse: (response) => response.data,
+    }),
+    markAsRead: builder.mutation({
+      query: () => ({
+        url: `/notifications/markall-as-read`,
+        method: "POST",
+      }),
+      invalidatesTags: ["notification"],
+      transformResponse: (response) => response.data,
     }),
   }),
 });
@@ -79,7 +102,10 @@ export const {
   useGetSupportQuery,
   useGetUtilizeCategoriesQuery,
   useGetSupportsReplyQuery,
+  useGetNotificationsQuery,
+  useMarkAsReadMutation,
   useGetCategoryQuery,
+  useReadNotificationQuery,
   useUpdateProfileMutation,
   useCreateSupportMutation,
   useReplySupportMutation,

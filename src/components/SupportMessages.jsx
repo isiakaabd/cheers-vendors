@@ -4,9 +4,8 @@ import EmptyCell from "components/EmptyTable";
 import BasicTable from "components/Table";
 import { Formik, Form } from "formik/dist";
 import { useState } from "react";
-
-import { useNavigate } from "react-router-dom";
-import { useGetSupportQuery } from "redux/api/vendor";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useGetSupportQuery, useReadNotificationQuery } from "redux/api/vendor";
 import { getDate } from "utilis";
 import FormikControl from "validation/FormikControl";
 
@@ -16,9 +15,11 @@ const AllMessages = () => {
   const headcells = ["Title", "Date Created", "Message", "Status"];
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(0);
+  const { state: messageId } = useLocation();
+
+  useReadNotificationQuery(messageId);
 
   if (isLoading) return <Skeletons />;
-
   const onSubmit = () => {};
   return (
     <Grid item container flexDirection="column">

@@ -65,7 +65,6 @@ const Registration = () => {
       phone,
       password,
       username: vendor,
-      vendor_name: vendor,
       password_confirmation: confirmPassword,
     };
     try {

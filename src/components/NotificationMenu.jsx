@@ -1,9 +1,28 @@
-// import { useState } from "react";
 import MailIcon from "@mui/icons-material/Mail";
-import { Badge, IconButton } from "@mui/material";
+import {
+  Badge,
+  Button,
+  Grid,
+  IconButton,
+  ListItemButton,
+  ListItemText,
+  Menu,
+} from "@mui/material";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-export default function NotificationMenu({ menuList }) {
+import { toast } from "react-toastify";
+import {
+  useGetNotificationsQuery,
+  useMarkAsReadMutation,
+} from "redux/api/vendor";
+const overflow = {
+  overflow: "hidden",
+  maxWidth: "100%",
+  textOverflow: "ellipsis",
+  wordWrap: "nowrap",
+  whiteSpace: "nowrap",
+};
+export default function NotificationMenu() {
   function notificationsLabel(count) {
     if (count === 0) {
       return "no notifications";
@@ -13,29 +32,47 @@ export default function NotificationMenu({ menuList }) {
     }
     return `${count} notifications`;
   }
+  const [markAsRead] = useMarkAsReadMutation();
   const navigate = useNavigate();
+  const { data } = useGetNotificationsQuery();
+  const handleRead = async () => {
+    try {
+      const { data } = await markAsRead();
+      toast.success(data);
+    } catch (err) {
+      toast.error(err || "Something went wrong..");
+    }
+  };
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => setAnchorEl(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
   return (
     <div>
       <IconButton
         size="large"
         aria-label={notificationsLabel(100)}
         id="fade-button"
-        // aria-controls={open ? "fade-menu" : undefined}
+        aria-controls={open ? "fade-menu" : undefined}
         aria-haspopup="true"
-        // aria-expanded={open ? "true" : undefined}
-        onClick={() => navigate("/support/message")}
+        aria-expanded={open ? "true" : undefined}
+        onClick={
+          handleClick
+          //
+        }
       >
         <Badge
-          badgeContent={4}
+          badgeContent={data?.unreadNotificationCount || 0}
           color="primary"
           sx={{ fontSize: "2rem" }}
-          showZero
         >
           <MailIcon color="action" sx={{ fontSize: "2.5rem" }} />
         </Badge>
       </IconButton>
 
-      {/* <Menu
+      <Menu
         id="fade-menu"
         MenuListProps={{
           "aria-labelledby": "fade-button",
@@ -47,6 +84,7 @@ export default function NotificationMenu({ menuList }) {
             overflow: "visible",
             filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
             mt: 1.5,
+            maxWidth: "30rem",
           },
         }}
         open={open}
@@ -54,50 +92,31 @@ export default function NotificationMenu({ menuList }) {
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        {/* {menuList.map((item, idx) => (
-          <MenuItem key={idx} sx={{ width: "300px" }}>
-            {item}
-          </MenuItem>
-        ))} */}
-      {/* <List sx={{ width: "100%" }}> 
-          {birthdayMessages.map((text, idx) => (
-            <List alignItems="flex-start" dense sx={{ width: "100%" }}>
-              {/* <ListItemButton role={undefined} dense sx={{ mr: 3 }}> 
-              <ListItemIcon>
-                <Checkbox
-                  edge="start"
-                  size="large"
-                  // checked={checked.indexOf(value) !== -1}
-                  tabIndex={-1}
-                  disableRipple
-                  // inputProps={{ "aria-labelledby": labelId }}
-                />
-              </ListItemIcon>
-               </ListItemButton> 
-              <ListItemButton
-                sx={{ width: "100%" }}
-                onClick={() =>
-                  navigate(`/support/message/${idx}`, { state: text })
-                }
-              >
-                <ListItemText
-                  primary={text}
-                  key={idx}
-                  sx={{ width: "100%" }}
-                  primaryTypographyProps={{
-                    textAlign: "justify",
-                    // width: "30%",
-                    // maxHeight: "12rem",
-                    // overflow: "hidden",
-                    // textOverflow: "ellipsis",
-                    // whiteSpace: "nowrap",
-                  }}
-                />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        
-      </Menu> */}
+        {data?.notification_data?.length > 0 && (
+          <Grid item container justifyContent="flex-end">
+            <Button variant="text" onClick={handleRead}>
+              Mark All as Read
+            </Button>
+          </Grid>
+        )}
+        {data?.notification_data?.map((item, idx) => (
+          <ListItemButton
+            dense
+            key={idx}
+            onClick={() => {
+              navigate("/support/message", { state: item.id });
+              handleClose();
+            }}
+          >
+            <ListItemText
+              primary={item?.data?.title}
+              secondary={item?.data?.body}
+              primaryTypographyProps={overflow}
+              secondaryTypographyProps={overflow}
+            />
+          </ListItemButton>
+        ))}
+      </Menu>
     </div>
   );
 }

@@ -4,10 +4,6 @@ import {
   Card,
   CardHeader,
   List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
-  Divider,
   Avatar,
   IconButton,
   MenuItem,
@@ -23,23 +19,22 @@ import { useParams } from "react-router-dom";
 import { useState } from "react";
 import { PhotoProvider, PhotoSlider, PhotoView } from "react-photo-view";
 import Loader from "components/Loader";
-import { getTimeMoment } from "utilis";
 import BasicMenu from "components/MenuComponent";
 import { toast } from "react-toastify";
 import {
   useGetSupportsReplyQuery,
   useReplySupportMutation,
 } from "redux/api/vendor";
+import Messages from "./Messages";
 
 const Message = () => {
   const location = useLocation();
   const payload = location.state;
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [anchorEls, setAnchorEls] = useState(null);
   const [index, setIndex] = useState(0);
   const [images, setImages] = useState([]);
+  const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
-  const opens = Boolean(anchorEls);
+
   const [isViewerVisible, setIsViewerVisible] = useState(false);
 
   // Function to handle the button click and show the image viewer
@@ -56,17 +51,21 @@ const Message = () => {
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
+  const handleClose = () => setAnchorEl(null);
+
+  const { id } = useParams();
+
+  const { data, isLoading: loading, error } = useGetSupportsReplyQuery(id);
+
+  // const [status, setStatus] = useState(data?.is_open);
+  const [replySupport, { isLoading }] = useReplySupportMutation();
+  const [anchorEls, setAnchorEls] = useState(null);
+  const opens = Boolean(anchorEls);
+  const handleCloses = () => setAnchorEls(null);
   const handleClicks = (event) => {
     setAnchorEls(event.currentTarget);
   };
-  const handleClose = () => setAnchorEl(null);
-  const handleCloses = () => setAnchorEls(null);
-  const { id } = useParams();
-  const [state, setState] = useState([]);
-  const { data, isLoading: loading } = useGetSupportsReplyQuery(id);
-  // const [status, setStatus] = useState(data?.is_open);
-  const [replySupport, { isLoading }] = useReplySupportMutation();
-
   const onSubmit = async (values, { resetForm }) => {
     const formData = new FormData();
     const { message, file } = values;
@@ -78,14 +77,6 @@ const Message = () => {
     }
     const { data, error } = await replySupport(formData);
     if (data) {
-      setState([
-        ...state,
-        {
-          message,
-          sender: "admin",
-          createdAt: new Date(),
-        },
-      ]);
       setTimeout(() => resetForm(), 300);
     }
     if (error) toast.error(error.message);
@@ -95,11 +86,45 @@ const Message = () => {
       .min(10, "Minimum 10 symbols")
       .required("Message is required"),
   });
-
+  console.log(data?.support?.media?.length, "dttt");
+  if (error) return <p>Something went wrong..</p>;
   return (
-    <>
+    <Grid item container mt={{ xs: 6, md: 4 }} gap={{ md: 3, xs: 4 }}>
+      <Grid
+        item
+        md={6}
+        xs={10}
+        mb={{ md: 3, xs: 4 }}
+        mx="auto"
+        flexDirection={"column"}
+      >
+        <Card>
+          <CardHeader
+            title={
+              <Grid item container flexWrap={{ md: "nowrap" }} gap={2}>
+                <Grid item container flexWrap="nowrap">
+                  <Typography variant="h5" flex={1}>
+                    Vendor Response{" "}
+                  </Typography>
+                  <Typography variant="h5" fontWeight={700}>
+                    {data?.vendor_response || 0}
+                  </Typography>
+                </Grid>
+                <Grid item container flexWrap="nowrap">
+                  <Typography variant="h5" flex={1}>
+                    Admin Response{" "}
+                  </Typography>
+                  <Typography variant="h5" fontWeight={700}>
+                    {data?.admin_response || 0}
+                  </Typography>
+                </Grid>
+              </Grid>
+            }
+          />
+        </Card>
+      </Grid>
       <Grid item container mt={{ xs: 0, md: 4 }}>
-        <Grid item md={9} mx="auto" flexDirection={"column"}>
+        <Grid item md={9} xs={12} sm={11} mx="auto" flexDirection={"column"}>
           <Card>
             <CardHeader
               title={payload?.title}
@@ -124,73 +149,33 @@ const Message = () => {
               handleClick={handleClick}
               handleClose={handleClose}
             >
-              <MenuItem onClick={() => handleButtonClick(data?.media)}>
-                <ListItem>
-                  <ListItemText primary="View Images" />
-                </ListItem>
+              <MenuItem
+                disabled={data?.support?.media.length === 0}
+                onClick={() => handleButtonClick(data?.support.media)}
+              >
+                View Image
               </MenuItem>
             </BasicMenu>
           </Card>
 
           {loading ? (
-            <Loader color={"#333"} />
+            <Grid item mt={2}>
+              <Loader color={"#333"} />
+            </Grid>
           ) : (
             <List dense alignItems="flex-start">
-              {state?.map((reply) => (
-                <>
-                  <ListItem
-                    alignItems="flex-start"
-                    dense
-                    sx={{
-                      backgroundColor:
-                        reply.sender === "admin" ? "#d9fdd3" : "#a80a69",
-                    }}
-                    secondaryAction={
-                      <IconButton
-                        edge="end"
-                        aria-label="more-action"
-                        id="basic-button"
-                        aria-controls={opens ? "basic-menu" : undefined}
-                        aria-haspopup="true"
-                        aria-expanded={opens ? "true" : undefined}
-                        onClick={handleClicks}
-                      >
-                        <MoreVertIcon sx={{ fontSize: "2.5rem" }} />
-                      </IconButton>
-                    }
-                    disablePadding
-                  >
-                    <ListItemButton dense>
-                      <ListItemText
-                        primary={reply.message}
-                        primaryTypographyProps={{ textAlign: "justify" }}
-                        secondary={
-                          <Typography
-                            variant="h6"
-                            sx={{ textAlign: "right", width: "100%" }}
-                          >
-                            {getTimeMoment(reply.created_at)}
-                          </Typography>
-                        }
-                        // primary={reply.title}
-                      />
-                    </ListItemButton>
-                  </ListItem>
-                  <Divider variant="fullWidth" />
-                  <BasicMenu
-                    open={opens}
-                    anchorEl={anchorEls}
-                    setAnchorEl={setAnchorEls}
-                    handleClick={handleClicks}
-                    handleClose={handleCloses}
-                  >
-                    <MenuItem onClick={() => handleButtonClick(reply?.media)}>
-                      <ListItem>
-                        <ListItemText primary="View Images" />
-                      </ListItem>
-                    </MenuItem>
-                  </BasicMenu>
-                </>
+              {data?.support?.replies.map((reply, idx) => (
+                <Messages
+                  reply={reply}
+                  idx={idx}
+                  key={reply.id}
+                  opens={opens}
+                  anchorEls={anchorEls}
+                  setAnchorEls={setAnchorEls}
+                  handleCloses={handleCloses}
+                  handleClicks={handleClicks}
+                  handleButtonClick={handleButtonClick}
+                />
               ))}
             </List>
           )}
@@ -317,8 +302,7 @@ const Message = () => {
           />
         </PhotoProvider>
       )}
-    </>
+    </Grid>
   );
 };
-
 export default Message;
