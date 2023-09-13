@@ -27,8 +27,7 @@ const Messages = ({
         alignItems="flex-start"
         dense
         sx={{
-          backgroundColor: reply.sender === "admin" ? "#d9fdd3" : "#a80a69",
-          color: reply.sender !== "admin" && "#fff",
+          backgroundColor: reply.sender === "admin" ? "#ffb9eb99" : "#ffb9eb5c",
         }}
         secondaryAction={
           <IconButton
@@ -54,7 +53,7 @@ const Messages = ({
                 variant="h6"
                 sx={{ textAlign: "right", width: "100%" }}
               >
-                {getTimeMoment(reply.created_at)}
+                {getTimeMoment(reply.created_at)} | {reply?.sender}
               </Typography>
             }
           />
@@ -68,10 +67,7 @@ const Messages = ({
         handleClick={handleClicks}
         handleClose={handleCloses}
       >
-        <MenuItem
-          // disabled={reply.media.length === 0}
-          onClick={() => handleButtonClick(reply)}
-        >
+        <MenuItem onClick={() => handleButtonClick(reply)}>
           View Images
         </MenuItem>
       </BasicMenu>

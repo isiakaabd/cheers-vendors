@@ -102,6 +102,7 @@ export const {
   useGetSupportQuery,
   useGetUtilizeCategoriesQuery,
   useGetSupportsReplyQuery,
+  useLazyGetSupportsReplyQuery,
   useGetNotificationsQuery,
   useMarkAsReadMutation,
   useGetCategoryQuery,

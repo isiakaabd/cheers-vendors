@@ -16,16 +16,18 @@ import { useLocation } from "react-router-dom";
 import FormikControl from "validation/FormikControl";
 import * as Yup from "yup";
 import { useParams } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PhotoProvider, PhotoSlider, PhotoView } from "react-photo-view";
 import Loader from "components/Loader";
 import BasicMenu from "components/MenuComponent";
 import { toast } from "react-toastify";
 import {
   useGetSupportsReplyQuery,
+  useLazyGetSupportsReplyQuery,
   useReplySupportMutation,
 } from "redux/api/vendor";
 import Messages from "./Messages";
+import { RefreshOutlined } from "@mui/icons-material";
 
 const Message = () => {
   const location = useLocation();
@@ -56,10 +58,22 @@ const Message = () => {
 
   const { id } = useParams();
 
-  const { data, isLoading: loading, error } = useGetSupportsReplyQuery(id);
+  const {
+    data,
+    isLoading: loading,
+    error,
+  } = useGetSupportsReplyQuery(id, { pollingInterval: 120000 });
 
-  // const [status, setStatus] = useState(data?.is_open);
+  const [getMessage, { data: reloadData, isError }] =
+    useLazyGetSupportsReplyQuery(id);
+  useEffect(() => {
+    if (reloadData) {
+      toast.success("Support Response Returned Successfully");
+    }
+    if (isError) toast.error("something went wrong...");
+  }, [reloadData, isError]);
   const [replySupport, { isLoading }] = useReplySupportMutation();
+
   const [anchorEls, setAnchorEls] = useState(null);
   const opens = Boolean(anchorEls);
   const handleCloses = () => setAnchorEls(null);
@@ -79,24 +93,25 @@ const Message = () => {
     if (data) {
       setTimeout(() => resetForm(), 300);
     }
-    if (error) toast.error(error.message);
+
+    if (error) toast.error(error.data.message);
   };
   const validationSchema = Yup.object().shape({
     message: Yup.string()
       .min(10, "Minimum 10 symbols")
       .required("Message is required"),
   });
-  console.log(data?.support?.media?.length, "dttt");
+
   if (error) return <p>Something went wrong..</p>;
   return (
     <Grid item container mt={{ xs: 6, md: 4 }} gap={{ md: 3, xs: 4 }}>
       <Grid
         item
-        md={6}
+        md={8}
         xs={10}
         mb={{ md: 3, xs: 4 }}
         mx="auto"
-        flexDirection={"column"}
+        flexWrap={"nowrap"}
       >
         <Card>
           <CardHeader
@@ -121,6 +136,11 @@ const Message = () => {
               </Grid>
             }
           />
+          <Grid item container justifyContent="center">
+            <IconButton title="Refresh Messages" onClick={() => getMessage(id)}>
+              <RefreshOutlined fontSize="large" />
+            </IconButton>
+          </Grid>
         </Card>
       </Grid>
       <Grid item container mt={{ xs: 0, md: 4 }}>
@@ -179,102 +199,102 @@ const Message = () => {
               ))}
             </List>
           )}
-          {/* {status ? ( */}
-          <Grid item container mt={5}>
-            <Formik
-              initialValues={{ message: "", file: null }}
-              onSubmit={onSubmit}
-              validationSchema={validationSchema}
-            >
-              {({ values, errors }) => (
-                <Form noValidate style={{ width: "100%" }}>
-                  <Grid item container>
-                    <Typography variant="h4" mb={2} gutterBottom>
-                      Reply
-                    </Typography>
-                  </Grid>
-                  <Grid item container flexDirection={"column"} gap={3}>
+          {Boolean(payload.is_open) ? (
+            <Grid item container mt={5}>
+              <Formik
+                initialValues={{ message: "", file: null }}
+                onSubmit={onSubmit}
+                validationSchema={validationSchema}
+              >
+                {({ values, errors }) => (
+                  <Form noValidate style={{ width: "100%" }}>
                     <Grid item container>
-                      <FormikControl
-                        name="message"
-                        control="textarea"
-                        placeholder="Enter Your Response here..."
-                        autoComplete="off"
-                      />
-                    </Grid>
-                    <Grid item container>
-                      <FormikControl name="file" control="file" />
-                    </Grid>
-                    {errors.file && (
-                      <Typography color="error" variant="error">
-                        {errors.file}
+                      <Typography variant="h4" mb={2} gutterBottom>
+                        Reply
                       </Typography>
-                    )}
-                    <PhotoProvider>
+                    </Grid>
+                    <Grid item container flexDirection={"column"} gap={3}>
+                      <Grid item container>
+                        <FormikControl
+                          name="message"
+                          control="textarea"
+                          placeholder="Enter Your Response here..."
+                          autoComplete="off"
+                        />
+                      </Grid>
+                      <Grid item container>
+                        <FormikControl name="file" control="file" />
+                      </Grid>
+                      {errors.file && (
+                        <Typography color="error" variant="error">
+                          {errors.file}
+                        </Typography>
+                      )}
+                      <PhotoProvider>
+                        <Grid
+                          item
+                          container
+                          display="grid"
+                          gap={1}
+                          gridTemplateColumns={{
+                            xs: "repeat(auto-fill, minmax(5rem, 1fr))",
+                          }}
+                        >
+                          {values?.file?.preview?.map((item, idx) => (
+                            <Grid
+                              key={idx}
+                              item
+                              sx={{
+                                // p: 0.5,
+                                position: "relative",
+                                width: "100%",
+                              }}
+                            >
+                              <PhotoView key={idx} src={item}>
+                                <Avatar
+                                  variant="square"
+                                  src={item}
+                                  sx={{
+                                    cursor: "pointer",
+                                    "& .MuiAvatar-img": {
+                                      objectFit: "cover !important",
+                                      width: "100%",
+                                    },
+                                    width: "100%",
+                                    maxHeight: "100%",
+                                    transition: "border 1ms linear",
+                                  }}
+                                />
+                              </PhotoView>
+                            </Grid>
+                          ))}
+                        </Grid>
+                      </PhotoProvider>
                       <Grid
                         item
                         container
-                        display="grid"
-                        gap={1}
-                        gridTemplateColumns={{
-                          xs: "repeat(auto-fill, minmax(5rem, 1fr))",
-                        }}
+                        justifyContent="center"
+                        alignItem="center"
                       >
-                        {values?.file?.preview?.map((item, idx) => (
-                          <Grid
-                            key={idx}
-                            item
-                            sx={{
-                              // p: 0.5,
-                              position: "relative",
-                              width: "100%",
-                            }}
-                          >
-                            <PhotoView key={idx} src={item}>
-                              <Avatar
-                                variant="square"
-                                src={item}
-                                sx={{
-                                  cursor: "pointer",
-                                  "& .MuiAvatar-img": {
-                                    objectFit: "cover !important",
-                                    width: "100%",
-                                  },
-                                  width: "100%",
-                                  maxHeight: "100%",
-                                  transition: "border 1ms linear",
-                                }}
-                              />
-                            </PhotoView>
-                          </Grid>
-                        ))}
-                      </Grid>
-                    </PhotoProvider>
-                    <Grid
-                      item
-                      container
-                      justifyContent="center"
-                      alignItem="center"
-                    >
-                      <Grid item md={5} xs={10}>
-                        <CustomButton
-                          type="submit"
-                          title="Submit"
-                          isSubmitting={isLoading}
-                        />
+                        <Grid item md={5} xs={10}>
+                          <CustomButton
+                            type="submit"
+                            title="Submit"
+                            isSubmitting={isLoading}
+                          />
+                        </Grid>
                       </Grid>
                     </Grid>
-                  </Grid>
-                  {/* end::Form group */}
-                </Form>
-              )}
-            </Formik>
-          </Grid>
-          {/* // ) : (
-          //   <Grid item container my={2} justifyContent={"center"}>
-          //     <Typography variant="h3"> Issue has been closed</Typography>
-          //   </Grid>
-          // )} */}
+                    {/* end::Form group */}
+                  </Form>
+                )}
+              </Formik>
+            </Grid>
+          ) : (
+            <Grid item container my={2} justifyContent={"center"}>
+              <Typography variant="h3"> Issue has been closed</Typography>
+            </Grid>
+          )}
         </Grid>
       </Grid>
       {isViewerVisible && (

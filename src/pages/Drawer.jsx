@@ -358,7 +358,7 @@ export default function MiniDrawer() {
           {/* profile pics */}
           <Grid item>
             <Grid item container alignItems="center" flexWrap="nowrap" gap={2}>
-              <NotificationMenu menuList={["list"]} />
+              <NotificationMenu />
               <Avatar
                 src={
                   profile?.media?.length > 0
